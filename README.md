@@ -1,5 +1,5 @@
 # DungeonsGenerator
-Dungeons generator created as a fork of the one used for Once upon a Dungeon game.
+Dungeons generator created as a fork of the one used for [Once upon a Dungeon] (https://store.steampowered.com/app/772090/Once_upon_a_Dungeon/) game.
 
 Features:
 - generates a dungeon with a desired number of rooms (nodes)
