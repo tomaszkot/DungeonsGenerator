@@ -60,16 +60,6 @@ namespace Dungeons
 
     protected List<TileNeighborhood> allNeighborhoods = new List<TileNeighborhood> { TileNeighborhood.East, TileNeighborhood.West, TileNeighborhood.North, TileNeighborhood.South };
 
-    internal void GenerateLayoutDoors(EntranceSide side)
-    {
-      List<Wall> wall = sides[side];
-      for (int i=0; i< wall.Count;i++)
-      {
-        if (i % 2 == 0)
-          CreateDoor(wall[i]);
-      }
-    }
-
     public const int DefaultNodeIndex = -100;
     public const int ChildIslandNodeIndex = -2;
     int nodeIndex = DefaultNodeIndex;
@@ -149,6 +139,16 @@ namespace Dungeons
       if (generationInfo != null)
       {
         GenerateContent();
+      }
+    }
+
+    internal void GenerateLayoutDoors(EntranceSide side)
+    {
+      List<Wall> wall = sides[side];
+      for (int i = 0; i < wall.Count; i++)
+      {
+        if (i % 2 == 0)
+          CreateDoor(wall[i]);
       }
     }
 
@@ -572,7 +572,7 @@ namespace Dungeons
         if (destStartPoint != null)
         {
           var nextPoint = new Point();
-          nextPoint.x = destStartPoint.Value.x;// + islandWidth + 1;
+          nextPoint.x = destStartPoint.Value.x;
           nextPoint.y = destStartPoint.Value.y + islandHeight + 1;
           destStartPoint = nextPoint;
         }
@@ -593,12 +593,11 @@ namespace Dungeons
     /// <param name="destStartPoint"></param>
     /// <param name="maxSize"></param>
     /// <param name="childIsland"></param>
-    /// <param name="entranceSide"></param>
-    /// <param name="maxDoors">can be used to limit doors number, used for secret room</param>
+    /// <param name="entranceSideToSkip"></param>
     public virtual void AppendMaze(DungeonNode childMaze, Point? destStartPoint = null, Point? maxSize = null, bool childIsland = false,
-      EntranceSide? entranceSide = null, int maxDoors = -1)
+      EntranceSide? entranceSideToSkip = null)
     {
-      childMaze.AppendedSide = entranceSide;
+      childMaze.AppendedSide = entranceSideToSkip;
       Parts.Add(childMaze);
 
       var start = destStartPoint ?? GetInteriorStartingPoint(4, childMaze);
@@ -607,7 +606,7 @@ namespace Dungeons
 
       childMaze.AppendMazeStartPoint = start;
       SetAppendedNodeIndex(childMaze);
-      int createdDoorsNumber = 0;
+
       for (int row = 0; row < maxSize.Value.y; row++)
       {
         for (int col = 0; col < maxSize.Value.x; col++)
@@ -615,7 +614,7 @@ namespace Dungeons
           var tile = childMaze.tiles[row, col];
           if (tile == null)
             continue;
-          if (entranceSide != null && childMaze.Sides[entranceSide.Value].Contains(tile as Wall))
+          if (entranceSideToSkip != null && childMaze.Sides[entranceSideToSkip.Value].Contains(tile as Wall))
             continue;
           SetCorner(maxSize, row, col, tile);
           int destCol = col + start.x;
@@ -624,33 +623,13 @@ namespace Dungeons
 
           if (childIsland)
             tile.dungeonNodeIndex = ChildIslandNodeIndexCounter;
-          //var tileToSet = CreateDoor(maxSize, entranceSide, maxDoors, ref createdDoorsNumber, row, col, destCol, destRow, tile);
+
           this.tiles[destRow, destCol] = tile;
         }
       }
 
       if (childIsland)
         ChildIslandNodeIndexCounter--;
-    }
-
-    private Tile CreateDoor(Point? maxSize, EntranceSide? entranceSide, int maxDoors, ref int createdDoorsNumber, 
-              int row, int col, int destCol, int destRow, Tile tileToSet)
-    {
-      Tile res = tileToSet;
-      return res;//TODO
-      var createDoors = this.generationInfo.CreateDoors && (maxDoors < 0 || maxDoors > createdDoorsNumber);
-      if (createDoors && entranceSide != null)
-      {
-        var prevTile = this.tiles[destRow, destCol];
-        var door = CreateDoors(maxSize, entranceSide, row, col, prevTile, tileToSet);
-        if (door != null)
-        {
-          res = door;
-          createdDoorsNumber++;
-        }
-      }
-
-      return res;
     }
 
     protected virtual void SetAppendedNodeIndex(DungeonNode childMaze)
@@ -849,7 +828,7 @@ namespace Dungeons
 
     public void PrintNewLine()
     {
-      Console.Write('\n');
+      Console.Write(Environment.NewLine);
     }
 
     public List<Door> Doors

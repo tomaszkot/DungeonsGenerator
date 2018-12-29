@@ -43,17 +43,17 @@ namespace Dungeons
         if(nodeIndex < mazeNodes.Count-1)
           mazeNodes[nodeIndex].GenerateLayoutDoors(infoNext.side);
 
-        EntranceSide? entranceSide = null;
+        EntranceSide? entranceSideToSkip = null;
         if (nodeIndex > 0)
         {
           if (prevEntranceSide == EntranceSide.Right)
-            entranceSide = EntranceSide.Left;
+            entranceSideToSkip = EntranceSide.Left;
           else if (prevEntranceSide == EntranceSide.Bottom)
-            entranceSide = EntranceSide.Top;
+            entranceSideToSkip = EntranceSide.Top;
           else
             Debug.Assert(false);
         }
-        localLevel.AppendMaze(mazeNodes[nodeIndex], new Point(info.nextX, info.nextY), null, false, entranceSide);
+        localLevel.AppendMaze(mazeNodes[nodeIndex], new Point(info.nextX, info.nextY), null, false, entranceSideToSkip);
 
         prevEntranceSide = infoNext.side;
         info = infoNext;
