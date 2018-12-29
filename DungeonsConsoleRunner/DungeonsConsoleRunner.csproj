@@ -57,5 +57,8 @@
       <Name>Dungeons</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="samples\SampleDungeon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
