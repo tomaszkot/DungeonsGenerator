@@ -42,7 +42,7 @@ namespace Dungeons
     //sides are borders of the dungeon node
     [XmlIgnore]
     [JsonIgnore]
-    Dictionary<EntranceSide, List<Tile>> sides = new Dictionary<EntranceSide, List<Tile>>();
+    Dictionary<EntranceSide, List<Wall>> sides = new Dictionary<EntranceSide, List<Wall>>();
 
     //dungeons appended as child of this one
     private List<DungeonNode> parts = new List<DungeonNode>();
@@ -55,10 +55,21 @@ namespace Dungeons
     public int Height { get { return tiles.GetLength(0); } }
     [XmlIgnore]
     [JsonIgnore]
-    internal Dictionary<EntranceSide, List<Tile>> Sides { get { return sides; } }
+    internal Dictionary<EntranceSide, List<Wall>> Sides { get { return sides; } }
 
 
     protected List<TileNeighborhood> allNeighborhoods = new List<TileNeighborhood> { TileNeighborhood.East, TileNeighborhood.West, TileNeighborhood.North, TileNeighborhood.South };
+
+    internal void GenerateLayoutDoors(EntranceSide side)
+    {
+      List<Wall> wall = sides[side];
+      for (int i=0; i< wall.Count;i++)
+      {
+        if (i % 2 == 0)
+          CreateDoor(wall[i]);
+      }
+    }
+
     public const int DefaultNodeIndex = -100;
     public const int ChildIslandNodeIndex = -2;
     int nodeIndex = DefaultNodeIndex;
@@ -379,9 +390,9 @@ namespace Dungeons
       AddSplitWall(vertically);
     }
 
-    List<Tile> AddWalls(List<Point> points)
+    List<Wall> AddWalls(List<Point> points)
     {
-      List<Tile> tiles = new List<Tile>();
+      var tiles = new List<Wall>();
       foreach (var pt in points)
       {
         var wall = new Wall();
@@ -418,6 +429,11 @@ namespace Dungeons
     {
       if (point.x < 0 || point.y < 0)
         return false;
+      if (AppendMazeStartPoint != null)
+      {
+        point.x -= AppendMazeStartPoint.Value.x;
+        point.y -= AppendMazeStartPoint.Value.y;
+      }
       if (point.x >= Width || point.y >= Height)
         return false;
 
@@ -599,6 +615,8 @@ namespace Dungeons
           var tile = childMaze.tiles[row, col];
           if (tile == null)
             continue;
+          if (entranceSide != null && childMaze.Sides[entranceSide.Value].Contains(tile as Wall))
+            continue;
           SetCorner(maxSize, row, col, tile);
           int destCol = col + start.x;
           int destRow = row + start.y;
@@ -606,8 +624,8 @@ namespace Dungeons
 
           if (childIsland)
             tile.dungeonNodeIndex = ChildIslandNodeIndexCounter;
-          var tileToSet = CreateDoor(maxSize, entranceSide, maxDoors, ref createdDoorsNumber, row, col, destCol, destRow, tile);
-          this.tiles[destRow, destCol] = tileToSet;
+          //var tileToSet = CreateDoor(maxSize, entranceSide, maxDoors, ref createdDoorsNumber, row, col, destCol, destRow, tile);
+          this.tiles[destRow, destCol] = tile;
         }
       }
 
@@ -788,7 +806,7 @@ namespace Dungeons
     }
     
 
-    internal Tile GenerateEntrance(List<Tile> points)
+    internal Tile GenerateEntrance(List<Wall> points)
     {
       int index = random.Next(points.Count - 2);
       if (index == 0)

@@ -20,6 +20,7 @@ namespace Dungeons.Tiles
   {
     //members public for speed purposes
     public Point point;
+
     private char symbol = Constants.SymbolBackground;
     public string name;
     public ConsoleColor color = ConsoleColor.White;
