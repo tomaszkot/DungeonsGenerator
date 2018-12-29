@@ -27,7 +27,7 @@ namespace Dungeons
 
   [XmlRoot("Node", Namespace = "DungeonNode")]
   [XmlInclude(typeof(Wall))]
-  public class DungeonNode : INodePrinter
+  public class DungeonNode 
   {
     [XmlIgnore]
     [JsonIgnore]
@@ -154,7 +154,8 @@ namespace Dungeons
 
     protected virtual void GenerateContent()
     {
-      PlaceEmptyTiles();
+      if(generationInfo.GenerateEmptyTiles)
+        PlaceEmptyTiles();
       if (generationInfo.GenerateOuterWalls)
         GenerateOuterWalls();
 
@@ -636,25 +637,7 @@ namespace Dungeons
     {
       childMaze.NodeIndex = ChildIslandNodeIndexCounter;
     }
-
-    protected virtual Tile CreateDoors(Point? maxSize, EntranceSide? entranceSide, int row, int col, Tile prevTile, Tile tileToSet)
-    {
-      if (prevTile is Wall && tileToSet is Wall)
-      {
-        //GameManager.Instance.Assert((prevTile as Wall).IsSide && (tileToSet as Wall).IsSide);
-        ////Debug.WriteLine("tileToSet side = "+ tileToSet);
-        if (
-          ((col % 2 == 0 && col > 1 && col < maxSize.Value.x - 1 && entranceSide.Value == EntranceSide.Bottom) ||
-          (row % 2 == 0 && row > 1 && row < maxSize.Value.y - 1 && entranceSide.Value == EntranceSide.Right))
-          )
-        {
-          return CreateDoor(tileToSet);
-        }
-      }
-
-      return null;
-    }
-
+    
     private static void SetCorner(Point? maxSize, int row, int col, Tile tile)
     {
       if ((col == 1 && row == 1)
@@ -826,11 +809,6 @@ namespace Dungeons
       return tile;
     }
 
-    public void PrintNewLine()
-    {
-      Console.Write(Environment.NewLine);
-    }
-
     public List<Door> Doors
     {
       get
@@ -841,49 +819,10 @@ namespace Dungeons
 
     public EntranceSide? AppendedSide { get; private set; }
 
-    public void Print(Tile tile, PrintInfo pi)
-    {
-      var color = ConsoleColor.White;
-      var symbol = ' ';
-      if (tile != null)
-      {
-        color = tile.color;
-        if (pi.PrintNodeIndexes)
-        {
-          Console.ForegroundColor = color;
-          Console.Write(tile.dungeonNodeIndex);
-          return;
-        }
-        if (tile.Revealed)
-        {
-          symbol = tile.Symbol;
-
-        }
-      }
-      Console.ForegroundColor = color;
-      Console.Write(symbol);
-    }
-
-    public void Print(INodePrinter p, PrintInfo pi)
-    {
-      //consoleStartPos.x = Console.CursorLeft;
-      //consoleStartPos.y = Console.CursorTop;
-
-
-      for (int row = 0; row < Height; row++)
-      {
-        p.PrintNewLine();
-        for (int col = 0; col < Width; col++)
-        {
-          var tile = tiles[row, col];
-          p.Print(tile, pi);
-        }
-      }
-    }
-
     public virtual void Print(PrintInfo pi)
     {
-      Print(this, pi);
+      var ap = new AsciiPrinter(this);
+      ap.Print(ap, pi);
     }
 
     internal void DeleteWrongDoors()

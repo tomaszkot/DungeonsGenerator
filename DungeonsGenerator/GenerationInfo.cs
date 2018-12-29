@@ -30,6 +30,7 @@ namespace Dungeons
     public int MinRoomLeft = 6;
     public int NumberOfChildIslands = 1;
     public bool ChildIslandAllowed = true;
+    internal bool GenerateEmptyTiles = true;
 
     public GenerationInfo()
     {

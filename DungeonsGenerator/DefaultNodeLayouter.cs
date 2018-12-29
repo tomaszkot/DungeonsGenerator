@@ -17,16 +17,16 @@ namespace Dungeons
   {
     public DungeonNode DoLayout(List<DungeonNode> nodes)
     {
-      var gi = new GenerationInfo();
-      var tw = nodes.Sum(i => i.Width);
+       //totals sizes
+       var tw = nodes.Sum(i => i.Width);
       var th = nodes.Sum(i => i.Height);
-      var localLevel = new DungeonNode(tw, th, gi);
-      localLevel.Reveal(false);
+      var localLevel = new DungeonNode(tw, th, null);
+      var maxLoc = localLevel.GetMaxXY();
 
       LayoutNodes(localLevel, nodes);
 
       var max = localLevel.GetMaxXY();
-      var Level = new DungeonNode(max.First + 1, max.Second + 1, gi);
+      var Level = new DungeonNode(max.First + 1, max.Second + 1, null);
       Level.AppendMaze(localLevel, new Point(0, 0), new Point(max.First + 1, max.Second + 1));
       Level.DeleteWrongDoors();
 
