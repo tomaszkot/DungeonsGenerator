@@ -62,7 +62,7 @@ namespace Dungeons
 
     private AppendNodeInfo CalcNextValues(List<DungeonNode> mazeNodes, AppendNodeInfo prevInfo, float chanceForLevelTurn, int nodeIndex)
     {
-      AppendNodeInfo infoNext = new AppendNodeInfo();
+      AppendNodeInfo infoNext = prevInfo;
 
       if (prevInfo.nextForcedSide != null)
       {
