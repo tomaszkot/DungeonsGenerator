@@ -3,3 +3,7 @@
 ################################################################################
 
 /.vs
+/DungeonsConsoleRunner/bin/Debug
+/DungeonsConsoleRunner/obj/Debug
+/DungeonsGenerator/bin/Debug
+/DungeonsGenerator/obj/Debug
