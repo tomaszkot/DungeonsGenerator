@@ -13,4 +13,4 @@ var level = generator.Run();
 level.Print();
 ```
 Above code will display something like:
-[Sample Dungeon] (DungeonsConsoleRunner/samples/SampleDungeon.png)
+[Sample Dungeon](DungeonsConsoleRunner/samples/SampleDungeon.png)
