@@ -54,7 +54,7 @@ namespace Dungeons.Tiles
       this.Name = GetType().Name;
       this.point = point;
       this.Symbol = symbol;
-      this.revealed = false;
+      this.revealed = true;
     }
 
     public bool Revealed

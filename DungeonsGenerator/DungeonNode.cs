@@ -3,6 +3,7 @@ using Dungeons.Tiles;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -10,8 +11,13 @@ namespace Dungeons
 {
   public interface INodePrinter
   {
-    void Print(Tile tile, bool printNodeIndexes = false);
+    void Print(Tile tile, PrintInfo pi);
     void PrintNewLine();
+  }
+
+  public class PrintInfo
+  {
+    public bool PrintNodeIndexes = false;
   }
 
   public enum EntranceSide { Left, Right, Top, Bottom };
@@ -137,6 +143,7 @@ namespace Dungeons
 
     protected virtual void GenerateContent()
     {
+      PlaceEmptyTiles();
       if (generationInfo.GenerateOuterWalls)
         GenerateOuterWalls();
 
@@ -491,8 +498,15 @@ namespace Dungeons
 
     public virtual Tile CreateDoor(Tile original)
     {
+      if (generationInfo.ChildIsland)
+      {
+        Debug.Assert(generationInfo.EntrancesCount > 0);
+      }
+      else
+        Debug.Assert(generationInfo.EntrancesCount == 0);
       var door = CreateDoorInstance();
-      SetTile(door, original.point);
+      bool doorSet = SetTile(door, original.point);
+      Debug.Assert(doorSet);
       door.dungeonNodeIndex = original.dungeonNodeIndex;
       Doors.Add(door);
       return door;
@@ -528,6 +542,7 @@ namespace Dungeons
 
       var generationInfoIsl = generationInfo.Clone() as GenerationInfo;//TODO
       generationInfoIsl.EntrancesCount = 4;
+      generationInfoIsl.ChildIsland = true;
       Point? destStartPoint = null;
       if (generationInfo.NumberOfChildIslands > 1)
         destStartPoint = new Point(generationInfo.MinRoomLeft / 2 + 1, generationInfo.MinRoomLeft / 2);
@@ -701,12 +716,6 @@ namespace Dungeons
           (si as Wall).IsSide = true;
       }
 
-      DoGridAction((int col, int row) =>
-      {
-        if (tiles[row, col] == null)
-          tiles[row, col] = GenerateEmptyTile(new Point(col, row));
-      });
-
       List<EntranceSide> generated = new List<EntranceSide>();
       for (int i = 0; i < generationInfo.EntrancesCount; i++)
       {
@@ -717,6 +726,15 @@ namespace Dungeons
           CreateDoor(entr.Second);
         }
       }
+    }
+
+    private void PlaceEmptyTiles()
+    {
+      DoGridAction((int col, int row) =>
+      {
+        if (tiles[row, col] == null)
+          tiles[row, col] = GenerateEmptyTile(new Point(col, row));
+      });
     }
 
     public bool HasTile(Tile tile)
@@ -818,14 +836,14 @@ namespace Dungeons
 
     public EntranceSide? AppendedSide { get; private set; }
 
-    public void Print(Tile tile, bool printNodeIndexes = false)
+    public void Print(Tile tile, PrintInfo pi)
     {
       var color = ConsoleColor.White;
       var symbol = ' ';
       if (tile != null)
       {
         color = tile.color;
-        if (printNodeIndexes)
+        if (pi.PrintNodeIndexes)
         {
           Console.ForegroundColor = color;
           Console.Write(tile.dungeonNodeIndex);
@@ -841,8 +859,7 @@ namespace Dungeons
       Console.Write(symbol);
     }
 
-    //public Point consoleStartPos = new Point(0 , 0);
-    public void Print(INodePrinter p)
+    public void Print(INodePrinter p, PrintInfo pi)
     {
       //consoleStartPos.x = Console.CursorLeft;
       //consoleStartPos.y = Console.CursorTop;
@@ -854,14 +871,14 @@ namespace Dungeons
         for (int col = 0; col < Width; col++)
         {
           var tile = tiles[row, col];
-          p.Print(tile);
+          p.Print(tile, pi);
         }
       }
     }
 
-    public virtual void Print()
+    public virtual void Print(PrintInfo pi)
     {
-      Print(this);
+      Print(this, pi);
     }
 
     internal void DeleteWrongDoors()

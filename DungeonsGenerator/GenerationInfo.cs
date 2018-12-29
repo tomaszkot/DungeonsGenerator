@@ -7,7 +7,7 @@ namespace Dungeons
   /// </summary>
   public class GenerationInfo : ICloneable
   {
-    public const int NumberOfNodes = 2;
+    public const int NumberOfNodes = 1;
 
     /// <summary>
     /// Normally true, can be set to false for issue testing purposes
@@ -15,7 +15,8 @@ namespace Dungeons
     public bool CreateDoors = true;
 
     public int EntrancesCount = 0;
-    public bool GenerateOuterWalls = true;
+    public bool ChildIsland;
+    public bool GenerateOuterWalls = false;
     public bool GenerateRandomInterior = true;
     public bool PreferChildIslandInterior = false;
     public bool FirstNodeSmaller = false;

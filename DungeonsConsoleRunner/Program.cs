@@ -17,11 +17,12 @@ namespace ConsoleDungeonsRunner
     class Runner
     {
       Generator generator = new Generator();
+      PrintInfo printInfo = new PrintInfo();
 
       public void Run()
       {
         ConsoleSetup.Init();
-        Relaod();
+        Reload();
 
         bool exit = false;
         while (!exit)
@@ -31,21 +32,34 @@ namespace ConsoleDungeonsRunner
           if (input == ConsoleKey.Escape)
             exit = true;
           if (input == ConsoleKey.R)
-            Relaod();
+            Reload();
+          if (input == ConsoleKey.D)
+          {
+            printInfo.PrintNodeIndexes = !printInfo.PrintNodeIndexes;
+            Redraw();
+          }
         }
       }
 
-      void Relaod()
+      void Reload()
       {
         generator.Run();
         Redraw();
       }
 
+      
       private void Redraw()
       {
         Console.Clear();
         PrintUsage();
-        generator.Level.Print();
+        if (generator.Level != null)
+          generator.Level.Print(printInfo);
+        else
+        {
+          var nodes = generator.CreateDungeonNodes();
+          foreach (var node in nodes)
+            node.Print(printInfo);
+        }
         
       }
 

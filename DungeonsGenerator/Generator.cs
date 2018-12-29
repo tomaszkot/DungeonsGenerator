@@ -66,13 +66,16 @@ namespace Dungeons
       }
     }
 
-    protected virtual List<DungeonNode> CreateDungeonNodes()
+
+    //TODO public
+    public virtual List<DungeonNode> CreateDungeonNodes()
     {
       nodes = new List<DungeonNode>();
       var gi = this.CreateLevelGenerationInfo();
+      //gi.GenerateOuterWalls = true;
       for (int i = 0; i < NumberOfNodes; i++)
       {
-        var node = CreateNode(i);
+        var node = CreateNode(i, gi);
         node.Reveal(true);
         nodes.Add(node);
       }
@@ -92,7 +95,7 @@ namespace Dungeons
     protected virtual GenerationInfo CreateLevelGenerationInfo()
     {
       var gi = new GenerationInfo();
-      gi.GenerateOuterWalls = false;
+      //gi.GenerateOuterWalls = false;
 
       return gi;
     }
