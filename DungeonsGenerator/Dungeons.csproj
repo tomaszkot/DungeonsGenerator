@@ -42,12 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\EntityGenerationConstraints.cs" />
+    <Compile Include="Core\GenerationConstraints.cs" />
     <Compile Include="Core\GenericEventArgs.cs" />
     <Compile Include="Core\Point.cs" />
-    <Compile Include="Core\CommonRandHelper.cs" />
+    <Compile Include="Core\RandHelper.cs" />
     <Compile Include="Core\Tuple.cs" />
-    <Compile Include="Core\Utils.cs" />
+    <Compile Include="Core\Extensions.cs" />
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="DungeonNode.cs" />

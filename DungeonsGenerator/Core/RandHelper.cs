@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Dungeons.Core
 {
   public class RandHelper
   {
     private static Random random = new Random();
-
-
+    
     public static int GetRandomInt(int max)
     {
       return random.Next(max);
@@ -85,7 +83,7 @@ namespace Dungeons.Core
     }
 
 
-    public static void DoRandomAction(float minThreshold, Action ac)
+    public static void DoThresholdAction(float minThreshold, Action ac)
     {
       var rand = Random.NextDouble();
       if (rand > minThreshold)

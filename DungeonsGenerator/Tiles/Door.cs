@@ -5,9 +5,7 @@ namespace Dungeons.Tiles
 {
   public class Door : Tile
   {
-    public const char SymbolDoor = '+';
-
-    public Door(Point point) : base(point, SymbolDoor)
+    public Door(Point point) : base(point, Constants.SymbolDoor)
     {
       color = ConsoleColor.Yellow;
     }

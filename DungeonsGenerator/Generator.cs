@@ -30,7 +30,7 @@ namespace Dungeons
 
     Tile GetPossibleDoorTile(List<Tile> listOne, List<Tile> listTwo)
     {
-      var common = listOne.SelectMany(x => listTwo.Where(y => y.IsSamePosition(x))).ToList();
+      var common = listOne.SelectMany(x => listTwo.Where(y => y.IsAtSamePosition(x))).ToList();
       int doorIndex = random.Next(common.Count);
       if (doorIndex == 0)
         doorIndex++;

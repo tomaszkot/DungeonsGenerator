@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Dungeons.Core
 {
-	public static class Extensions
-	{
-		//ForEch was not compiling for Win8.1 phone :/
-		public static void Each<T>(this IEnumerable<T> source, Action<T> action)
-		{
-			foreach (T element in source)
-				action(element);
-		}
+  public static class Extensions
+  {
+    //ForEch was not compiling for Win8.1 phone :/
+    public static void Each<T>(this IEnumerable<T> source, Action<T> action)
+    {
+      foreach (T element in source)
+        action(element);
+    }
 
     public static string FirstCharToUpper(string input)
     {
@@ -23,11 +22,6 @@ namespace Dungeons.Core
         default: return input.First().ToString().ToUpper() + input.Substring(1);
       }
     }
-  }
-
-	public static class Utils
-  {
-    
 
     public static void Shuffle<T>(this IList<T> list)
     {

@@ -6,15 +6,21 @@ namespace Dungeons.Core
     const int InvalidCoord = -1;
     public int x;
     public int y;
+    static Point invalid;
+
+    static Point()
+    {
+      var point = new Point();
+      point.x = InvalidCoord;
+      point.y = InvalidCoord;
+      invalid = point;
+    }
 
     public static Point Invalid
     {
       get
       {
-        var point = new Point();
-        point.x = InvalidCoord;
-        point.y = InvalidCoord;
-        return point;
+        return invalid;
       }
     }
 
@@ -53,6 +59,8 @@ namespace Dungeons.Core
       return !(p1 == p2);
     }
 
+
+    //TODO use GUID member and return here mGetHashCode.GetHashCode()
     public override int GetHashCode()
     {
       unchecked // Overflow is fine, just wrap

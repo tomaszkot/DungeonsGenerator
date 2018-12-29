@@ -5,40 +5,42 @@ using System.Xml.Serialization;
 
 namespace Dungeons.Tiles
 {
+  public class Constants
+  {
+    public const int MinNormalNodeIndex = 0;
+
+    public const char SymbolBackground = '.';
+    public const char SymbolDoor = '+';
+    public const char SymbolWall = '#';
+  }
+
   [XmlInclude(typeof(Wall))]
   [Serializable]
   public class Tile
   {
-    public const char SymbolBackground = '.';
-
     //members public for speed purposes
     public Point point;
-    private char symbol = SymbolBackground;
+    private char symbol = Constants.SymbolBackground;
     public string name;
     public ConsoleColor color = ConsoleColor.White;
-    public int dungeonNodeIndex = -1;
+
+    /// <summary>
+    /// The index of the node (room) the tile belongs to
+    /// </summary>
+    public int dungeonNodeIndex = Constants.MinNormalNodeIndex - 1;
+
+    /// <summary>
+    /// If the tile is at node's corner this member says which corner it is.
+    /// </summary>
     public TileCorner? corner;
 
+    /// <summary>
+    /// If false the tile is not visible. The revealed flag shall be typically set to true when a door leading to room are opened.
+    /// </summary>
     bool revealed;
-    public bool Revealed
-    {
-      get { return revealed; }
-      set
-      {
-        revealed = value;
-      }
-    }
-    public int ToursSinceRevealed { get; set; }
-    
 
-    public bool IsAtValidPoint
-    {
-      get { return point.IsValid; }
-    }
 
-    public bool IsEmpty { get { return Symbol == SymbolBackground; } }
-
-    public Tile() : this(SymbolBackground)
+    public Tile() : this(Constants.SymbolBackground)
     {
     }
 
@@ -54,6 +56,22 @@ namespace Dungeons.Tiles
       this.Symbol = symbol;
       this.revealed = false;
     }
+
+    public bool Revealed
+    {
+      get { return revealed; }
+      set
+      {
+        revealed = value;
+      }
+    }
+
+    public bool IsAtValidPoint
+    {
+      get { return point.IsValid; }
+    }
+
+    public bool IsEmpty { get { return Symbol == Constants.SymbolBackground; } }
 
     public string Name
     {
@@ -85,7 +103,7 @@ namespace Dungeons.Tiles
 
     public bool IsFromChildIsland
     {
-      get { return dungeonNodeIndex < 0; }
+      get { return dungeonNodeIndex < Constants.MinNormalNodeIndex; }
     }
 
     public float RevealPercent { get; set; }
@@ -103,7 +121,7 @@ namespace Dungeons.Tiles
       }
     }
 
-    public bool IsSamePosition(Tile other)
+    public bool IsAtSamePosition(Tile other)
     {
       return point.Equals(other.point);
     }

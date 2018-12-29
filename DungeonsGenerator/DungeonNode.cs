@@ -258,7 +258,7 @@ namespace Dungeons
       return GetTile(pt);
     }
 
-    public List<Tile> GetEmptyTiles(EntityGenerationConstraints constraints = null, bool lookInsidechildIslands = false)
+    public List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool lookInsidechildIslands = false)
     {
       var emptyTiles = new List<Tile>();
       DoGridAction((int col, int row) =>
@@ -791,7 +791,7 @@ namespace Dungeons
 
     public Tile GenerateEmptyTile(Point pt)
     {
-      var tile = new Tile(pt, Tile.SymbolBackground);
+      var tile = new Tile(pt, Constants.SymbolBackground);
       tile.dungeonNodeIndex = NodeIndex;
       return tile;
     }

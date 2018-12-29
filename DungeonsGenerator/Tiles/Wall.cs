@@ -9,18 +9,15 @@ namespace Dungeons.Tiles
 
   public class Wall : Tile, IObstacleTile
   {
-    public const char SymbolWall = '#';
+    
     public bool IsSide { get; set; }
 
-    public Wall(Point point) : base(point, SymbolWall)
+    public Wall(Point point) : base(point, Constants.SymbolWall)
     {
     }
 
-    public Wall() : base(SymbolWall) { }
+    public Wall() : this(Point.Invalid) { }
 
-    public override string ToString()
-    {
-      return base.ToString() + " DNI: " + dungeonNodeIndex;
-    }
+
   }
 }
