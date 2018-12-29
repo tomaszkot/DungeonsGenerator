@@ -115,6 +115,7 @@ namespace Dungeons
       }
     }
 
+    public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
 
     static DungeonNode()
     {
@@ -142,6 +143,20 @@ namespace Dungeons
       }
     }
 
+    public DungeonNode(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = -1, DungeonNode parent = null)
+    {
+      this.Parent = parent;
+      if (parent != null)
+        this.NodeIndex = parent.NodeIndex * 10;
+      //Console.WriteLine("DungeonNode ctor width ="+ width);
+      this.NodeIndex = nodeIndex;
+      if (gi != null)
+        this.generationInfo = gi;
+      this.tiles = tiles;
+    }
+
+    //methods
+
     internal void GenerateLayoutDoors(EntranceSide side)
     {
       List<Wall> wall = sides[side];
@@ -159,7 +174,6 @@ namespace Dungeons
       if (generationInfo.GenerateOuterWalls)
         GenerateOuterWalls();
 
-      //GenerateDragonJar();
       if (generationInfo.GenerateRandomInterior)
         GenerateRandomInterior();
 
@@ -177,19 +191,7 @@ namespace Dungeons
           AddFinishingDecorations();
       }
     }
-
-    public DungeonNode(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = -1, DungeonNode parent = null)
-    {
-      this.Parent = parent;
-      if (parent != null)
-        this.NodeIndex = parent.NodeIndex * 10;
-      //Console.WriteLine("DungeonNode ctor width ="+ width);
-      this.NodeIndex = nodeIndex;
-      if (gi != null)
-        this.generationInfo = gi;
-      this.tiles = tiles;
-    }
-
+    
     public bool IsCornerWall(Wall wall)
     {
       var neibs = GetNeighborTiles(wall).Where(i => i is Wall).ToList();
@@ -477,7 +479,7 @@ namespace Dungeons
 
       return false;
     }
-    public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
+    
     protected virtual void SetDungeonNodeIndex(Tile tile)
     {
       tile.dungeonNodeIndex = this.NodeIndex;
@@ -833,7 +835,7 @@ namespace Dungeons
         if (tile is Door)
         {
           var neibs = GetNeighborTiles(tile);
-          if (neibs.Where(i => i is Wall).Count() == 3)
+          if (neibs.Where(i => i is Wall).Count() >= 3)
             toDel.Add(tile);
         }
       }

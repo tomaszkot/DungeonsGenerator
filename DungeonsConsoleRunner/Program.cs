@@ -56,17 +56,17 @@ namespace ConsoleDungeonsRunner
           generator.Level.Print(printInfo);
         else
         {
-          var nodes = generator.CreateDungeonNodes();
-          foreach (var node in nodes)
-            node.Print(printInfo);
+          //var nodes = generator.CreateDungeonNodes();
+          //foreach (var node in nodes)
+          //  node.Print(printInfo);
         }
         
       }
 
       private void PrintUsage()
       {
-        Console.WriteLine(Environment.NewLine);
-        Console.WriteLine(Environment.NewLine);
+        //Console.WriteLine(Environment.NewLine);
+        //Console.WriteLine(Environment.NewLine);
         Console.WriteLine("Usage:");
         Console.WriteLine("R - reload");
         Console.WriteLine("Esc - exit");
