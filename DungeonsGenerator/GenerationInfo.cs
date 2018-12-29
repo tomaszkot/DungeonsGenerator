@@ -2,14 +2,23 @@
 
 namespace Dungeons
 {
+  /// <summary>
+  /// Info describing creation of the dungeon node. Members public to enhance speed.
+  /// </summary>
   public class GenerationInfo : ICloneable
   {
-    //members public to enhance speed
-    public int entrancesCount = 0;
-    public bool generateOuterWalls = true;
-    public bool generateRandomInterior = true;
-    public bool preferChildIslandInterior = false;
-    public bool firstNodeSmaller = false;
+    public const int NumberOfNodes = 2;
+
+    /// <summary>
+    /// Normally true, can be set to false for issue testing purposes
+    /// </summary>
+    public bool CreateDoors = true;
+
+    public int EntrancesCount = 0;
+    public bool GenerateOuterWalls = true;
+    public bool GenerateRandomInterior = true;
+    public bool PreferChildIslandInterior = false;
+    public bool FirstNodeSmaller = false;
     public bool GenerateRandomStonesBlocks = true;
 
     public int MinMazeNodeSize = 15;

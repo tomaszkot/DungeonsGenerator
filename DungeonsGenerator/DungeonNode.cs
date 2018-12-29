@@ -10,13 +10,14 @@ namespace Dungeons
 {
   public interface INodePrinter
   {
-    void Print(Tile tile);
+    void Print(Tile tile, bool printNodeIndexes = false);
     void PrintNewLine();
   }
 
   public enum EntranceSide { Left, Right, Top, Bottom };
   public enum TileCorner { NorthWest, SouthWest, NorthEast, SouthEast }
   public enum TileNeighborhood { North, South, East, West }
+  public enum Interior { T, L };//shape of the interior
 
   [XmlRoot("Node", Namespace = "DungeonNode")]
   [XmlInclude(typeof(Wall))]
@@ -27,12 +28,12 @@ namespace Dungeons
     protected Tile[,] tiles;
     protected GenerationInfo generationInfo;
     protected static Random random;
-    public enum Interior { T, L };
+    
     [XmlIgnore]
     [JsonIgnore]
     List<DungeonNode> childIslands = new List<DungeonNode>();
 
-    //sides are borders of the dungeon
+    //sides are borders of the dungeon node
     [XmlIgnore]
     [JsonIgnore]
     Dictionary<EntranceSide, List<Tile>> sides = new Dictionary<EntranceSide, List<Tile>>();
@@ -128,8 +129,6 @@ namespace Dungeons
         this.generationInfo = gi;
 
       tiles = new Tile[height, width];
-      //var wi = tiles.GetLength(0);
-      //var he = tiles.GetLength(1);
       if (generationInfo != null)
       {
         GenerateContent();
@@ -138,11 +137,11 @@ namespace Dungeons
 
     protected virtual void GenerateContent()
     {
-      if (generationInfo.generateOuterWalls)
+      if (generationInfo.GenerateOuterWalls)
         GenerateOuterWalls();
 
       //GenerateDragonJar();
-      if (generationInfo.generateRandomInterior)
+      if (generationInfo.GenerateRandomInterior)
         GenerateRandomInterior();
 
       GenerateRandomStonesBlocks();
@@ -194,7 +193,6 @@ namespace Dungeons
     public List<Tile> GetNeighborTiles(Tile tile, bool incDiagonal = false)
     {
       var neibs = new List<Tile>();
-      //allNeighborhoods.ForEach(
       foreach (var i in allNeighborhoods)
       {
         var neib = GetNeighborTile(tile, i);
@@ -271,7 +269,6 @@ namespace Dungeons
           if (constraints == null || (constraints.IsInside(pt)))
             emptyTiles.Add(tiles[row, col]);
         }
-        return false;
       });
       return emptyTiles;
     }
@@ -280,7 +277,7 @@ namespace Dungeons
     {
       Interior? interior = null;
       var rand = random.NextDouble();
-      if (generationInfo.ChildIslandAllowed && (generationInfo.preferChildIslandInterior || rand < .33))
+      if (generationInfo.ChildIslandAllowed && (generationInfo.PreferChildIslandInterior || rand < .33))
       {
         var island = GenerateChildIslands();
         if (island == null)
@@ -298,7 +295,7 @@ namespace Dungeons
       if (Width - generationInfo.MinSimpleInteriorSize > 4
         && Height - generationInfo.MinSimpleInteriorSize > 4)
       {
-        interior = Interior.T;//CommonRandHelper.GetRandomEnumValue<Interior>();
+        interior = RandHelper.GetRandomEnumValue<Interior>();
         GenerateInterior(interior.Value);
       }
       else
@@ -330,7 +327,7 @@ namespace Dungeons
             pts.Add(others[i].point);
         }
 
-        AddTiles(pts);
+        AddWalls(pts);
       }
     }
 
@@ -365,7 +362,7 @@ namespace Dungeons
         //horiz
         points.AddRange(GenerateWallPoints(legX, endX, endY - 1, endY));
       }
-      AddTiles(points);
+      AddWalls(points);
       AddFinishingDecorations();
     }
 
@@ -375,7 +372,7 @@ namespace Dungeons
       AddSplitWall(vertically);
     }
 
-    List<Tile> AddTiles(List<Point> points)
+    List<Tile> AddWalls(List<Point> points)
     {
       List<Tile> tiles = new List<Tile>();
       foreach (var pt in points)
@@ -396,7 +393,7 @@ namespace Dungeons
         int x = this.Width / 2;
         points = GenerateWallPoints(x, x + 1, 1, Height, 1);
       }
-      var tiles = AddTiles(points);
+      var tiles = AddWalls(points);
       GenerateEntrance(tiles);
     }
 
@@ -530,7 +527,7 @@ namespace Dungeons
         islandHeight = generationInfo.MinSubMazeNodeSize;
 
       var generationInfoIsl = generationInfo.Clone() as GenerationInfo;//TODO
-      generationInfoIsl.entrancesCount = 4;
+      generationInfoIsl.EntrancesCount = 4;
       Point? destStartPoint = null;
       if (generationInfo.NumberOfChildIslands > 1)
         destStartPoint = new Point(generationInfo.MinRoomLeft / 2 + 1, generationInfo.MinRoomLeft / 2);
@@ -596,7 +593,7 @@ namespace Dungeons
             tile.dungeonNodeIndex = ChildIslandNodeIndexCounter;
           var tileToSet = tile;
 
-          var createDoors = (maxDoors < 0 || maxDoors > createdDoorsNumber);
+          var createDoors = this.generationInfo.CreateDoors && (maxDoors < 0 || maxDoors > createdDoorsNumber);
           if (createDoors && entranceSide != null)
           {
             var prevTile = this.tiles[destRow, destCol];
@@ -641,9 +638,9 @@ namespace Dungeons
     private static void SetCorner(Point? maxSize, int row, int col, Tile tile)
     {
       if ((col == 1 && row == 1)
-                    || (col == maxSize.Value.x - 2 && (row == 1 || row == maxSize.Value.y - 2))
-                    || (col == 1 && row == maxSize.Value.y - 2)
-                    )
+          || (col == maxSize.Value.x - 2 && (row == 1 || row == maxSize.Value.y - 2))
+          || (col == 1 && row == maxSize.Value.y - 2)
+      )
       {
         if (col == 1 && row == 1)
           tile.corner = TileCorner.SouthWest;
@@ -693,10 +690,10 @@ namespace Dungeons
       var bottomPoints = GenerateWallPoints(0, Width, Height - 1, Height, 0);
       var leftPoints = GenerateWallPoints(0, 1, 0, Height, 0);
       var rightPoints = GenerateWallPoints(Width - 1, Width, 0, Height, 0);
-      Sides.Add(EntranceSide.Top, AddTiles(topPoints));
-      Sides.Add(EntranceSide.Bottom, AddTiles(bottomPoints));
-      Sides.Add(EntranceSide.Left, AddTiles(leftPoints));
-      Sides.Add(EntranceSide.Right, AddTiles(rightPoints));
+      Sides.Add(EntranceSide.Top, AddWalls(topPoints));
+      Sides.Add(EntranceSide.Bottom, AddWalls(bottomPoints));
+      Sides.Add(EntranceSide.Left, AddWalls(leftPoints));
+      Sides.Add(EntranceSide.Right, AddWalls(rightPoints));
 
       foreach (var side in Sides.Values)
       {
@@ -708,11 +705,10 @@ namespace Dungeons
       {
         if (tiles[row, col] == null)
           tiles[row, col] = GenerateEmptyTile(new Point(col, row));
-        return false;
       });
 
       List<EntranceSide> generated = new List<EntranceSide>();
-      for (int i = 0; i < generationInfo.entrancesCount; i++)
+      for (int i = 0; i < generationInfo.EntrancesCount; i++)
       {
         var entr = GenerateEntranceAtRandomSide(generated.ToArray());
         if (entr.Second != null)
@@ -726,12 +722,12 @@ namespace Dungeons
     public bool HasTile(Tile tile)
     {
       bool has = false;
-      DoGridAction((int col, int row) =>
+      DoGridFunc((int col, int row) =>
       {
         if (tiles[row, col] == tile)
         {
           has = true;
-          return true;
+          return true;//break loop
         }
         return false;
       });
@@ -739,7 +735,7 @@ namespace Dungeons
       return has;
     }
 
-    public void DoGridAction(Func<int, int, bool> ac)
+    public void DoGridFunc(Func<int, int, bool> func)
     {
       bool cancel = false;
       for (int row = 0; row < Height; row++)
@@ -748,12 +744,23 @@ namespace Dungeons
           break;
         for (int col = 0; col < Width; col++)
         {
-          cancel = ac(col, row);
+          cancel = func(col, row);
           if (cancel)
             break;
         }
       }
     }
+    public void DoGridAction(Action<int, int> ac)
+    {
+      for (int row = 0; row < Height; row++)
+      {
+        for (int col = 0; col < Width; col++)
+        {
+          ac(col, row);
+        }
+      }
+    }
+    
 
     internal Tile GenerateEntrance(List<Tile> points)
     {
@@ -801,8 +808,6 @@ namespace Dungeons
       Console.Write('\n');
     }
 
-    public static bool PrintNodeIndexes { get; set; }
-
     public List<Door> Doors
     {
       get
@@ -813,14 +818,14 @@ namespace Dungeons
 
     public EntranceSide? AppendedSide { get; private set; }
 
-    public void Print(Tile tile)
+    public void Print(Tile tile, bool printNodeIndexes = false)
     {
       var color = ConsoleColor.White;
       var symbol = ' ';
       if (tile != null)
       {
         color = tile.color;
-        if (PrintNodeIndexes)
+        if (printNodeIndexes)
         {
           Console.ForegroundColor = color;
           Console.Write(tile.dungeonNodeIndex);
@@ -888,7 +893,6 @@ namespace Dungeons
         {
           tiles[row, col].Revealed = reveal;
         }
-        return false;
       });
     }
 

@@ -47,8 +47,8 @@ namespace Dungeons
 
     protected virtual DungeonNode CreateNode(int index, GenerationInfo gi)
     {
-      var minNodeSize = index == 0 && gi.firstNodeSmaller ? gi.MinMazeNodeSize - gi.MinMazeNodeSize / 2 : gi.MinMazeNodeSize;
-      var maxNodeSize = index == 0 && gi.firstNodeSmaller ? gi.MaxMazeNodeSize - gi.MaxMazeNodeSize / 2 : gi.MaxMazeNodeSize;
+      var minNodeSize = index == 0 && gi.FirstNodeSmaller ? gi.MinMazeNodeSize - gi.MinMazeNodeSize / 2 : gi.MinMazeNodeSize;
+      var maxNodeSize = index == 0 && gi.FirstNodeSmaller ? gi.MaxMazeNodeSize - gi.MaxMazeNodeSize / 2 : gi.MaxMazeNodeSize;
 
       return CreateNode(random.Next(minNodeSize, maxNodeSize), random.Next(minNodeSize, maxNodeSize), gi, index);
     }
@@ -62,7 +62,7 @@ namespace Dungeons
     {
       get
       {
-        return 2;
+        return GenerationInfo.NumberOfNodes;
       }
     }
 
@@ -92,7 +92,7 @@ namespace Dungeons
     protected virtual GenerationInfo CreateLevelGenerationInfo()
     {
       var gi = new GenerationInfo();
-      gi.generateOuterWalls = false;
+      gi.GenerateOuterWalls = false;
 
       return gi;
     }
@@ -150,24 +150,6 @@ namespace Dungeons
           nextY += mazeNodes[i].Height - 1;
         else if (side == EntranceSide.Right)
           nextX += mazeNodes[i].Width - 1;
-      }
-    }
-
-    private void CreateDoors(DungeonNode level, EntranceSide side, List<DungeonNode> mazeNodes, int i)
-    {
-      if (i > 0)
-      {
-        Tile pDoor = null;
-        var prevMaze = mazeNodes[i - 1];
-        if (side == EntranceSide.Right)
-          pDoor = GetPossibleDoorTile(prevMaze.Sides[EntranceSide.Right], mazeNodes[i].Sides[EntranceSide.Left]);
-        else if (side == EntranceSide.Bottom)
-          pDoor = GetPossibleDoorTile(prevMaze.Sides[EntranceSide.Bottom], mazeNodes[i].Sides[EntranceSide.Top]);
-        if (pDoor != null)
-        {
-          level.CreateDoor(pDoor);
-
-        }
       }
     }
   }
