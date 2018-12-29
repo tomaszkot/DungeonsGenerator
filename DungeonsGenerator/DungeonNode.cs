@@ -821,8 +821,10 @@ namespace Dungeons
 
     public EntranceSide? AppendedSide { get; private set; }
 
-    public virtual void Print(PrintInfo pi)
+    public virtual void Print(PrintInfo pi = null)
     {
+      if (pi == null)
+        pi = new PrintInfo();
       var ap = new AsciiPrinter(this);
       ap.Print(ap, pi);
     }
