@@ -14,3 +14,7 @@ level.Print();
 ```
 Above code will display something like:
 [Sample Dungeon](DungeonsConsoleRunner/samples/SampleDungeon.png)
+
+
+##Configurtion:
+GenerationInfo class contains fields controlling generation process.
