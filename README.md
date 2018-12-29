@@ -16,5 +16,5 @@ Above code will display something like:
 [Sample Dungeon](DungeonsConsoleRunner/samples/SampleDungeon.png)
 
 
-##Configurtion:
+## Configuration:
 GenerationInfo class contains fields controlling generation process.
