@@ -47,8 +47,8 @@ namespace Dungeons
 
     protected virtual DungeonNode CreateNode(int index, GenerationInfo gi)
     {
-      var minNodeSize = index == 0 && gi.FirstNodeSmaller ? gi.MinMazeNodeSize - gi.MinMazeNodeSize / 2 : gi.MinMazeNodeSize;
-      var maxNodeSize = index == 0 && gi.FirstNodeSmaller ? gi.MaxMazeNodeSize - gi.MaxMazeNodeSize / 2 : gi.MaxMazeNodeSize;
+      var minNodeSize = index == 0 && gi.FirstNodeSmaller ? gi.MinNodeSize - gi.MinNodeSize / 2 : gi.MinNodeSize;
+      var maxNodeSize = index == 0 && gi.FirstNodeSmaller ? gi.MaxNodeSize - gi.MaxNodeSize / 2 : gi.MaxNodeSize;
 
       return CreateNode(random.Next(minNodeSize, maxNodeSize), random.Next(minNodeSize, maxNodeSize), gi, index);
     }

@@ -1,6 +1,7 @@
 ﻿using Dungeons.Core;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Dungeons
 {
@@ -17,7 +18,9 @@ namespace Dungeons
     public DungeonNode DoLayout(List<DungeonNode> nodes)
     {
       var gi = new GenerationInfo();
-      var localLevel = new DungeonNode(60, 60, gi);
+      var tw = nodes.Sum(i => i.Width);
+      var th = nodes.Sum(i => i.Height);
+      var localLevel = new DungeonNode(tw, th, gi);
       localLevel.Reveal(false);
 
       LayoutNodes(localLevel, nodes);
