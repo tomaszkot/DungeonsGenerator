@@ -48,6 +48,7 @@
     <Compile Include="Core\RandHelper.cs" />
     <Compile Include="Core\Tuple.cs" />
     <Compile Include="Core\Extensions.cs" />
+    <Compile Include="DefaultNodeLayouter.cs" />
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="DungeonNode.cs" />

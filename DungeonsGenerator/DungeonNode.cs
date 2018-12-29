@@ -606,25 +606,33 @@ namespace Dungeons
 
           if (childIsland)
             tile.dungeonNodeIndex = ChildIslandNodeIndexCounter;
-          var tileToSet = tile;
-
-          var createDoors = this.generationInfo.CreateDoors && (maxDoors < 0 || maxDoors > createdDoorsNumber);
-          if (createDoors && entranceSide != null)
-          {
-            var prevTile = this.tiles[destRow, destCol];
-            var door = CreateDoors(maxSize, entranceSide, row, col, prevTile, tileToSet);
-            if (door != null)
-            {
-              tileToSet = door;
-              createdDoorsNumber++;
-            }
-          }
+          var tileToSet = CreateDoor(maxSize, entranceSide, maxDoors, ref createdDoorsNumber, row, col, destCol, destRow, tile);
           this.tiles[destRow, destCol] = tileToSet;
         }
       }
 
       if (childIsland)
         ChildIslandNodeIndexCounter--;
+    }
+
+    private Tile CreateDoor(Point? maxSize, EntranceSide? entranceSide, int maxDoors, ref int createdDoorsNumber, 
+              int row, int col, int destCol, int destRow, Tile tileToSet)
+    {
+      Tile res = tileToSet;
+      return res;//TODO
+      var createDoors = this.generationInfo.CreateDoors && (maxDoors < 0 || maxDoors > createdDoorsNumber);
+      if (createDoors && entranceSide != null)
+      {
+        var prevTile = this.tiles[destRow, destCol];
+        var door = CreateDoors(maxSize, entranceSide, row, col, prevTile, tileToSet);
+        if (door != null)
+        {
+          res = door;
+          createdDoorsNumber++;
+        }
+      }
+
+      return res;
     }
 
     protected virtual void SetAppendedNodeIndex(DungeonNode childMaze)

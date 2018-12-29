@@ -107,53 +107,13 @@ namespace Dungeons
     /// <returns></returns>
     protected virtual DungeonNode Generate(int levelIndex)
     {
-      var gi = CreateLevelGenerationInfo();
-      var localLevel = CreateLevel(levelIndex, 60, 60, gi);
-      localLevel.Reveal(false);
-
       var mazeNodes = CreateDungeonNodes();
-
-      LayoutNodes(localLevel, mazeNodes);
-
-      var max = localLevel.GetMaxXY();
-      Level = CreateLevel(levelIndex, max.First + 1, max.Second + 1, gi);
-      Level.AppendMaze(localLevel, new Point(0, 0), new Point(max.First + 1, max.Second + 1));
-      Level.DeleteWrongDoors();
-
+      var layouter = new DefaultNodeLayouter();
+      Level = layouter.DoLayout(mazeNodes);
+      
       return Level;
     }
 
-    protected virtual void LayoutNodes(DungeonNode localLevel, List<DungeonNode> mazeNodes)
-    {
-      int nextX = 0;
-      int nextY = 0;
-      EntranceSide side = EntranceSide.Right;
-      float chanceForLevelTurn = 0.5f;
-      EntranceSide? nextForcedSide = null;
-      for (int i = 0; i < mazeNodes.Count; i++)
-      {
-        localLevel.AppendMaze(mazeNodes[i], new Point(nextX, nextY), null, false, side);
-        var prevSide = side;
-        if (nextForcedSide != null)
-        {
-          side = nextForcedSide.Value;
-          nextForcedSide = null;
-        }
-        else
-        {
-          side = random.NextDouble() >= .5f ? EntranceSide.Bottom : EntranceSide.Right;
-          if (i > 0 && prevSide == side)
-          {
-            if (random.NextDouble() >= chanceForLevelTurn)
-              side = prevSide == EntranceSide.Bottom ? EntranceSide.Right : EntranceSide.Bottom;
-          }
-          chanceForLevelTurn -= 0.15f;
-        }
-        if (side == EntranceSide.Bottom)
-          nextY += mazeNodes[i].Height - 1;
-        else if (side == EntranceSide.Right)
-          nextX += mazeNodes[i].Width - 1;
-      }
-    }
+    
   }
 }
