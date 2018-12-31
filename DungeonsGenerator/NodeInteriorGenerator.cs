@@ -22,6 +22,9 @@ namespace Dungeons
 
     public void GenerateRandomInterior()
     {
+      if (!Inited())
+        return;
+
       Interior? interior = null;
       var rand = RandHelper.GetRandomDouble();
       if (generationInfo.ChildIslandAllowed && (generationInfo.PreferChildIslandInterior || rand < .33))
@@ -36,7 +39,12 @@ namespace Dungeons
         interior = GenerateRandomSimpleInterior();
     }
 
-    public Interior? GenerateRandomSimpleInterior(bool addFinishingDecorations = false)
+    bool Inited()
+    {
+      return generationInfo != null && dn != null;
+    }
+
+    Interior? GenerateRandomSimpleInterior(bool addFinishingDecorations = false)
     {
       Interior? interior = null;
       if (Width - generationInfo.MinSimpleInteriorSize > 4
@@ -55,7 +63,7 @@ namespace Dungeons
       return interior;
     }
 
-    private void AddSplitWall(bool vertically, int entrancesCount = 1)
+    void AddSplitWall(bool vertically, int entrancesCount = 1)
     {
       List<Point> points = new List<Point>();
       if (vertically)
@@ -69,6 +77,8 @@ namespace Dungeons
 
     internal Tile GenerateEntrance(List<Wall> points)
     {
+      if (!Inited())
+        return null;
       int index = RandHelper.Random.Next(points.Count - 2);
       if (index == 0)
         index++;//avoid corner
@@ -80,6 +90,9 @@ namespace Dungeons
 
     public void GenerateOuterWalls()
     {
+      if (!Inited())
+        return;
+
       var topPoints = GenerateWallPoints(0, Width, 0, 1, 0);
       var bottomPoints = GenerateWallPoints(0, Width, Height - 1, Height, 0);
       var leftPoints = GenerateWallPoints(0, 1, 0, Height, 0);
@@ -107,20 +120,20 @@ namespace Dungeons
       }
     }
 
-    internal Tuple<EntranceSide, Tile> GenerateEntranceAtRandomSide(EntranceSide[] skip = null)
+    Tuple<EntranceSide, Tile> GenerateEntranceAtRandomSide(EntranceSide[] skip = null)
     {
       EntranceSide side = RandHelper.GetRandomEnumValue<EntranceSide>(skip);
       return GenerateEntranceAtSide(side);
     }
 
-    internal Tuple<EntranceSide, Tile> GenerateEntranceAtSide(EntranceSide side)
+    Tuple<EntranceSide, Tile> GenerateEntranceAtSide(EntranceSide side)
     {
       var tile = GenerateEntrance(dn.Sides[side]);
       Tuple<EntranceSide, Tile> res = new Tuple<EntranceSide, Tile>(side, tile);
       return res;
     }
 
-    public void Split(bool vertically)
+    void Split(bool vertically)
     {
       AddSplitWall(vertically);
     }
@@ -140,7 +153,8 @@ namespace Dungeons
 
     public Point GetInteriorStartingPoint(int minSizeReduce = 6, DungeonNode child = null)
     {
-
+      if (!Inited())
+        return Point.Invalid;
       int islandWidth = child != null ? child.Width : (this.Width - minSizeReduce);
 
       int islandHeight = child != null ? child.Height : (this.Height - minSizeReduce);
@@ -155,7 +169,7 @@ namespace Dungeons
       return sp;
     }
 
-    internal void GenerateInterior(Interior interior)
+    void GenerateInterior(Interior interior)
     {
       List<Point> points = new List<Point>();
       var startPoint = GetInteriorStartingPoint();
@@ -192,6 +206,8 @@ namespace Dungeons
 
     public void AddFinishingDecorations()
     {
+      if (!Inited())
+        return;
       Func<Tile, bool> areAllEmpty = (Tile i) => { return dn.GetNeighborTiles(i, true).All(j => j != null && j.IsEmpty); };
 
       var empty = dn.GetEmptyTiles().Where(i => areAllEmpty(i)).ToList();
@@ -228,6 +244,9 @@ namespace Dungeons
     
     internal DungeonNode[] GenerateChildIslands()
     {
+      if (!Inited())
+        return null;
+
       List<DungeonNode> nodes = new List<DungeonNode>();
       var roomLeft = Width - generationInfo.MinSubMazeNodeSize * generationInfo.NumberOfChildIslands;
       if (roomLeft < generationInfo.MinRoomLeft)
@@ -276,6 +295,8 @@ namespace Dungeons
 
     public void GenerateRandomStonesBlocks()
     {
+      if (!Inited())
+        return;
       if (generationInfo.GenerateRandomStonesBlocks)
       {
         int maxDec = (Width + Height) / 4;

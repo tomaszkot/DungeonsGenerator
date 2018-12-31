@@ -134,19 +134,20 @@ namespace Dungeons
     {
     }
 
-    public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null, int nodeIndex = -1, DungeonNode parent = null)
+    public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null, 
+                       int nodeIndex = -1, DungeonNode parent = null, bool generateContent = true)
     {
       this.Parent = parent;
       if (parent != null)
         this.NodeIndex = parent.NodeIndex * 10;
-      //Console.WriteLine("DungeonNode ctor width ="+ width);
-      this.NodeIndex = nodeIndex;
-      if (gi != null)
-        this.generationInfo = gi;
+      else
+        this.NodeIndex = nodeIndex;
+      this.generationInfo = gi;
 
       interiorGenerator = new NodeInteriorGenerator(this, generationInfo);
       tiles = new Tile[height, width];
-      if (generationInfo != null)
+
+      if (generateContent && generationInfo != null)
       {
         GenerateContent();
       }
@@ -157,10 +158,10 @@ namespace Dungeons
       this.Parent = parent;
       if (parent != null)
         this.NodeIndex = parent.NodeIndex * 10;
-      //Console.WriteLine("DungeonNode ctor width ="+ width);
-      this.NodeIndex = nodeIndex;
-      if (gi != null)
-        this.generationInfo = gi;
+      else
+        this.NodeIndex = nodeIndex;
+
+      this.generationInfo = gi;
       this.tiles = tiles;
     }
 
