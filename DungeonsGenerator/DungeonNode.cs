@@ -136,17 +136,9 @@ namespace Dungeons
 
     public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null, 
                        int nodeIndex = -1, DungeonNode parent = null, bool generateContent = true)
+      :this(null, gi, nodeIndex, parent)
     {
-      this.Parent = parent;
-      if (parent != null)
-        this.NodeIndex = parent.NodeIndex * 10;
-      else
-        this.NodeIndex = nodeIndex;
-      this.generationInfo = gi;
-
-      interiorGenerator = new NodeInteriorGenerator(this, generationInfo);
       tiles = new Tile[height, width];
-
       if (generateContent && generationInfo != null)
       {
         GenerateContent();
@@ -162,6 +154,7 @@ namespace Dungeons
         this.NodeIndex = nodeIndex;
 
       this.generationInfo = gi;
+      this.interiorGenerator = new NodeInteriorGenerator(this, generationInfo);
       this.tiles = tiles;
     }
 
