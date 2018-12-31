@@ -53,6 +53,7 @@
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="DungeonNode.cs" />
+    <Compile Include="NodeInteriorGenerator.cs" />
     <Compile Include="Tiles\Door.cs" />
     <Compile Include="Tiles\Tile.cs" />
     <Compile Include="Tiles\Wall.cs" />
