@@ -59,34 +59,45 @@ namespace Dungeons
     [XmlIgnore]
     [JsonIgnore]
     internal Dictionary<EntranceSide, List<Wall>> Sides { get { return sides; } }
-
-
     protected List<TileNeighborhood> allNeighborhoods = new List<TileNeighborhood> { TileNeighborhood.East, TileNeighborhood.West, TileNeighborhood.North, TileNeighborhood.South };
-
-    public const int DefaultNodeIndex = -100;
-    public const int ChildIslandNodeIndex = -2;
-    int nodeIndex = DefaultNodeIndex;
+    public const int DefaultNodeIndex = 100;
+    public const int ChildIslandNodeIndex = -1;
+    int nodeIndex;
     DungeonNode parent;
     public static int ChildIslandNodeIndexCounter;
+    public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
+    NodeInteriorGenerator interiorGenerator;
 
-    [XmlIgnore]
-    [JsonIgnore]
-    public virtual List<DungeonNode> Parts
+    //ctors
+    static DungeonNode()
     {
-      get
+      random = new Random();
+      ChildIslandNodeIndexCounter = ChildIslandNodeIndex;
+    }
+
+    public DungeonNode() : this(10, 10, null, -100)
+    {
+    }
+
+    public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null, 
+                       int nodeIndex = DefaultNodeIndex, DungeonNode parent = null, bool generateContent = true)
+      :this(null, gi, nodeIndex, parent)
+    {
+      tiles = new Tile[height, width];
+      if (generateContent && generationInfo != null)
       {
-        return parts;
+        GenerateContent();
       }
     }
 
-    [XmlIgnore]
-    [JsonIgnore]
-    public List<DungeonNode> ChildIslands
+    public DungeonNode(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = DefaultNodeIndex, DungeonNode parent = null)
     {
-      get
-      {
-        return childIslands;
-      }
+      this.Parent = parent;
+      this.NodeIndex = nodeIndex;
+
+      this.generationInfo = gi;
+      this.interiorGenerator = new NodeInteriorGenerator(this, generationInfo);
+      this.tiles = tiles;
     }
 
     public Point? AppendMazeStartPoint { get; set; }
@@ -119,43 +130,24 @@ namespace Dungeons
       }
     }
 
-    public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
-
-    NodeInteriorGenerator interiorGenerator;
-
-    //ctors
-    static DungeonNode()
+    [XmlIgnore]
+    [JsonIgnore]
+    public virtual List<DungeonNode> Parts
     {
-      random = new Random();
-      ChildIslandNodeIndexCounter = ChildIslandNodeIndex;
-    }
-
-    public DungeonNode() : this(10, 10, null, -1)
-    {
-    }
-
-    public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null, 
-                       int nodeIndex = -1, DungeonNode parent = null, bool generateContent = true)
-      :this(null, gi, nodeIndex, parent)
-    {
-      tiles = new Tile[height, width];
-      if (generateContent && generationInfo != null)
+      get
       {
-        GenerateContent();
+        return parts;
       }
     }
 
-    public DungeonNode(Tile[,] tiles, GenerationInfo gi = null, int nodeIndex = -1, DungeonNode parent = null)
+    [XmlIgnore]
+    [JsonIgnore]
+    public List<DungeonNode> ChildIslands
     {
-      this.Parent = parent;
-      if (parent != null)
-        this.NodeIndex = parent.NodeIndex * 10;
-      else
-        this.NodeIndex = nodeIndex;
-
-      this.generationInfo = gi;
-      this.interiorGenerator = new NodeInteriorGenerator(this, generationInfo);
-      this.tiles = tiles;
+      get
+      {
+        return childIslands;
+      }
     }
 
     //methods
@@ -406,8 +398,10 @@ namespace Dungeons
         maxSize = new Point(childMaze.Width, childMaze.Height);
 
       childMaze.AppendMazeStartPoint = start;
-      SetAppendedNodeIndex(childMaze);
-
+      if (childIsland)
+      {
+        childMaze.NodeIndex = ChildIslandNodeIndexCounter;
+      }
       for (int row = 0; row < maxSize.Value.y; row++)
       {
         for (int col = 0; col < maxSize.Value.x; col++)
@@ -430,14 +424,13 @@ namespace Dungeons
       }
 
       if (childIsland)
+      {
         ChildIslandNodeIndexCounter--;
+      }
+
     }
 
-    protected virtual void SetAppendedNodeIndex(DungeonNode childMaze)
-    {
-      childMaze.NodeIndex = ChildIslandNodeIndexCounter;
-    }
-    
+ 
     private static void SetCorner(Point? maxSize, int row, int col, Tile tile)
     {
       if ((col == 1 && row == 1)

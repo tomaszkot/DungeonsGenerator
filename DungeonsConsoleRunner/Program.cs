@@ -69,6 +69,7 @@ namespace ConsoleDungeonsRunner
         //Console.WriteLine(Environment.NewLine);
         Console.WriteLine("Usage:");
         Console.WriteLine("R - reload");
+        Console.WriteLine("D - toggle node_indexes/symbols");
         Console.WriteLine("Esc - exit");
       }
     }
