@@ -13,4 +13,8 @@ var level = generator.Run();
 level.Print();
 ```
 Above code will display something like:
-TODO
+[Sample Dungeon](DungeonsConsoleRunner/samples/SampleDungeon.png)
+
+
+## Configuration:
+GenerationInfo class contains fields controlling generation process.
