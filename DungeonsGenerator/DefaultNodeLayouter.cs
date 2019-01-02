@@ -56,7 +56,8 @@ namespace Dungeons
           else
             Debug.Assert(false);
         }
-        localLevel.AppendMaze(mazeNodes[nodeIndex], new Point(info.nextX, info.nextY), null, false, entranceSideToSkip);
+        localLevel.AppendMaze(mazeNodes[nodeIndex], new Point(info.nextX, info.nextY), null, false, entranceSideToSkip,
+          nodeIndex > 0 ? mazeNodes[nodeIndex-1] : null);
 
         prevEntranceSide = infoNext.side;
         info = infoNext;
@@ -74,6 +75,7 @@ namespace Dungeons
       }
       else
       {
+        //infoNext.side = EntranceSide.Bottom;//TEST
         infoNext.side = RandHelper.GetRandomDouble() >= .5f ? EntranceSide.Bottom : EntranceSide.Right;
         if (nodeIndex > 0 && prevInfo.side == infoNext.side)
         {

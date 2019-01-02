@@ -384,42 +384,53 @@ namespace Dungeons
     /// </summary>
     /// <param name="childMaze"></param>
     /// <param name="destStartPoint"></param>
-    /// <param name="maxSize"></param>
+    /// <param name="childMazeMaxSize"></param>
     /// <param name="childIsland"></param>
     /// <param name="entranceSideToSkip"></param>
-    public virtual void AppendMaze(DungeonNode childMaze, Point? destStartPoint = null, Point? maxSize = null, bool childIsland = false,
-      EntranceSide? entranceSideToSkip = null)
+    public virtual void AppendMaze(DungeonNode childMaze, Point? destStartPoint = null, Point? childMazeMaxSize = null,
+      bool childIsland = false, EntranceSide? entranceSideToSkip = null, DungeonNode prevNode = null)
     {
       childMaze.AppendedSide = entranceSideToSkip;
       Parts.Add(childMaze);
 
       var start = destStartPoint ?? GetInteriorStartingPoint(4, childMaze);
-      if (maxSize == null)
-        maxSize = new Point(childMaze.Width, childMaze.Height);
+      if (childMazeMaxSize == null)
+        childMazeMaxSize = new Point(childMaze.Width, childMaze.Height);
 
       childMaze.AppendMazeStartPoint = start;
       if (childIsland)
       {
         childMaze.NodeIndex = ChildIslands.Count * -1;
       }
-      for (int row = 0; row < maxSize.Value.y; row++)
+      for (int row = 0; row < childMazeMaxSize.Value.y; row++)
       {
-        for (int col = 0; col < maxSize.Value.x; col++)
+        for (int col = 0; col < childMazeMaxSize.Value.x; col++)
         {
-          var tile = childMaze.tiles[row, col];
-          if (tile == null)
+          var tileInChildMaze = childMaze.tiles[row, col];
+          if (tileInChildMaze == null)
             continue;
-          if (entranceSideToSkip != null && childMaze.Sides[entranceSideToSkip.Value].Contains(tile as Wall))
-            continue;
-          SetCorner(maxSize, row, col, tile);
+          if (entranceSideToSkip != null)
+          {
+            var childMazeWall = tileInChildMaze as Wall;
+            if (childMaze.Sides[entranceSideToSkip.Value].Contains(childMazeWall))
+            {
+              var indexOfWall = childMaze.Sides[entranceSideToSkip.Value].IndexOf(childMazeWall);
+              if(prevNode == null || 
+                (entranceSideToSkip == EntranceSide.Left && indexOfWall < prevNode.Height-1) ||
+                (entranceSideToSkip == EntranceSide.Top && indexOfWall < prevNode.Width - 1)
+                )
+                continue;
+            }
+          }
+          SetCorner(childMazeMaxSize, row, col, tileInChildMaze);
           int destCol = col + start.x;
           int destRow = row + start.y;
-          tile.point = new Point(destCol, destRow);
+          tileInChildMaze.point = new Point(destCol, destRow);
 
           if (childIsland)
-            tile.dungeonNodeIndex = childMaze.NodeIndex;
+            tileInChildMaze.dungeonNodeIndex = childMaze.NodeIndex;
 
-          this.tiles[destRow, destCol] = tile;
+          this.tiles[destRow, destCol] = tileInChildMaze;
         }
       }
     }
@@ -581,8 +592,10 @@ namespace Dungeons
         if (tile is Door)
         {
           var neibs = GetNeighborTiles(tile);
-          if (neibs.Where(i => i is Wall).Count() >= 3)
+          if (neibs.Where(i => i is Wall).Count() >= 3 ||
+             neibs.Where(i=> i == null).Any())
             toDel.Add(tile);
+
         }
       }
       if (toDel.Any())
