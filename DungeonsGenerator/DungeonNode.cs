@@ -64,7 +64,7 @@ namespace Dungeons
     public const int ChildIslandNodeIndex = -1;
     int nodeIndex;
     DungeonNode parent;
-    public static int ChildIslandNodeIndexCounter;
+    
     public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
     NodeInteriorGenerator interiorGenerator;
 
@@ -72,7 +72,7 @@ namespace Dungeons
     static DungeonNode()
     {
       random = new Random();
-      ChildIslandNodeIndexCounter = ChildIslandNodeIndex;
+      
     }
 
     public DungeonNode() : this(10, 10, null, -100)
@@ -400,7 +400,7 @@ namespace Dungeons
       childMaze.AppendMazeStartPoint = start;
       if (childIsland)
       {
-        childMaze.NodeIndex = ChildIslandNodeIndexCounter;
+        childMaze.NodeIndex = ChildIslands.Count * -1;
       }
       for (int row = 0; row < maxSize.Value.y; row++)
       {
@@ -417,17 +417,11 @@ namespace Dungeons
           tile.point = new Point(destCol, destRow);
 
           if (childIsland)
-            tile.dungeonNodeIndex = ChildIslandNodeIndexCounter;
+            tile.dungeonNodeIndex = childMaze.NodeIndex;
 
           this.tiles[destRow, destCol] = tile;
         }
       }
-
-      if (childIsland)
-      {
-        ChildIslandNodeIndexCounter--;
-      }
-
     }
 
  
