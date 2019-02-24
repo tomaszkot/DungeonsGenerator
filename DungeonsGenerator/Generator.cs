@@ -6,7 +6,13 @@ using System.Linq;
 
 namespace Dungeons
 {
-  public class Generator
+  public interface IGameGenerator
+  {
+    DungeonNode Generate();
+    //DungeonNode Level { get; }
+  }
+
+  public class Generator : IGameGenerator
   {
     static protected Random random;
     protected List<DungeonNode> nodes;
@@ -17,15 +23,15 @@ namespace Dungeons
       random = new Random();
     }
 
-    public DungeonNode Level
-    {
-      get;
-      private set;
-    }
+    //public DungeonNode Level
+    //{
+    //  get;
+    //  protected set;
+    //}
 
-    public virtual DungeonNode Run()
+    public virtual DungeonNode Generate()
     {
-      return Generate(levelCounter++);
+      return Generate<DungeonNode>(levelCounter++);
     }
 
     Tile GetPossibleDoorTile(List<Tile> listOne, List<Tile> listTwo)
@@ -65,8 +71,7 @@ namespace Dungeons
         return GenerationInfo.NumberOfNodes;
       }
     }
-
-
+    
     //TODO public
     public virtual List<DungeonNode> CreateDungeonNodes()
     {
@@ -105,13 +110,13 @@ namespace Dungeons
     /// </summary>
     /// <param name="mazeNodes"></param>
     /// <returns></returns>
-    protected virtual DungeonNode Generate(int levelIndex)
+    protected virtual T Generate<T>(int levelIndex) where T : DungeonNode, new()
     {
       var mazeNodes = CreateDungeonNodes();
       var layouter = new DefaultNodeLayouter();
-      Level = layouter.DoLayout(mazeNodes);
-      
-      return Level;
+      T level = layouter.DoLayout<T>(mazeNodes);
+      //Level = level;
+      return level;
     }
 
     

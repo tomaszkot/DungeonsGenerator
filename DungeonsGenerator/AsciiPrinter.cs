@@ -1,4 +1,5 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons.Core;
+using Dungeons.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,16 +46,17 @@ namespace Dungeons
 
     public void Print(INodePrinter p, PrintInfo pi)
     {
-      //consoleStartPos.x = Console.CursorLeft;
-      //consoleStartPos.y = Console.CursorTop;
-
-
       for (int row = 0; row < node.Height; row++)
       {
         p.PrintNewLine();
         for (int col = 0; col < node.Width; col++)
         {
-          var tile = node.Tiles[row, col];
+          if (col == 2 && row == 1)
+          {
+            int kk = 0;
+          }
+
+          var tile = node.GetTile(new Point(col, row));
           p.Print(tile, pi);
         }
       }

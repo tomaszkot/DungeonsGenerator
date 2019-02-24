@@ -79,13 +79,20 @@ namespace Dungeons
     {
     }
 
+    public DungeonNode(int width = 10, int height = 10): this(width, height, null)
+    {
+      
+    }
+
     public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null, 
                        int nodeIndex = DefaultNodeIndex, DungeonNode parent = null, bool generateContent = true)
       :this(null, gi, nodeIndex, parent)
     {
       tiles = new Tile[height, width];
-      if (generateContent && generationInfo != null)
+
+      if (generateContent)
       {
+       
         GenerateContent();
       }
     }
@@ -95,6 +102,8 @@ namespace Dungeons
       this.Parent = parent;
       this.NodeIndex = nodeIndex;
 
+      //if (gi == null)
+      //  gi = new GenerationInfo();
       this.generationInfo = gi;
       this.interiorGenerator = new NodeInteriorGenerator(this, generationInfo);
       this.tiles = tiles;
@@ -164,6 +173,8 @@ namespace Dungeons
 
     protected virtual void GenerateContent()
     {
+      if (generationInfo == null)
+        return;
       if(generationInfo.GenerateEmptyTiles)
         PlaceEmptyTiles();
       if (generationInfo.GenerateOuterWalls)
@@ -243,6 +254,12 @@ namespace Dungeons
 
     protected Tile GetNeighborTile(Tile tile, TileNeighborhood neighborhood)
     {
+      var pt = GetNeighborPoint(tile, neighborhood);
+      return GetTile(pt);
+    }
+
+    protected Point GetNeighborPoint(Tile tile, TileNeighborhood neighborhood)
+    {
       Point pt = tile.point;
       switch (neighborhood)
       {
@@ -262,7 +279,13 @@ namespace Dungeons
           break;
       }
 
-      return GetTile(pt);
+      return pt;
+    }
+
+    public Point? GetEmptyPoint()
+    {
+      var tile = GetEmptyTiles().FirstOrDefault();
+      return tile?.point;
     }
 
     public List<Tile> GetEmptyTiles(GenerationConstraints constraints = null, bool lookInsidechildIslands = false)
@@ -270,7 +293,7 @@ namespace Dungeons
       var emptyTiles = new List<Tile>();
       DoGridAction((int col, int row) =>
       {
-        if (tiles[row, col] != null && tiles[row, col].IsEmpty  //null can be outside the walls
+        if (IsTileEmpty(tiles[row, col])// != null && tiles[row, col].IsEmpty  //null can be outside the walls
         )
         {
           var pt = new Point(col, row);
@@ -282,7 +305,7 @@ namespace Dungeons
       return emptyTiles;
     }
 
-    public Tile GetTile(Point point)
+    public virtual Tile GetTile(Point point)
     {
       if (point.x < 0 || point.y < 0)
         return null;
@@ -325,12 +348,16 @@ namespace Dungeons
           if (tile.IsAtValidPoint && (tile.point != point) && Width > tile.point.x && Height > tile.point.y)
           {
             var emp = GenerateEmptyTile();
-            emp.dungeonNodeIndex = tile.dungeonNodeIndex;//preserve;
+            if(emp != null)
+              emp.dungeonNodeIndex = tile.dungeonNodeIndex;//preserve;
             SetTile(emp, tile.point);
-            if (revealReseted)
-              emp.Revealed = true;//if hero goes out of the tile it must be revealed
-            if (OnTileRevealed != null)
-              OnTileRevealed(this, new GenericEventArgs<Tile>(emp));
+            if (emp != null)
+            {
+              if (revealReseted)
+                emp.Revealed = true;//if hero goes out of the tile it must be revealed
+              if (OnTileRevealed != null)
+                OnTileRevealed(this, new GenericEventArgs<Tile>(emp));
+            }
           }
         }
 
@@ -556,7 +583,7 @@ namespace Dungeons
       return GenerateEmptyTile(Point.Invalid);
     }
 
-    public Tile GenerateEmptyTile(Point pt)
+    public virtual Tile GenerateEmptyTile(Point pt)
     {
       var tile = new Tile(pt, Constants.SymbolBackground);
       tile.dungeonNodeIndex = NodeIndex;
@@ -616,6 +643,44 @@ namespace Dungeons
           tiles[row, col].Revealed = reveal;
         }
       });
+    }
+
+    public Point GetEmptyNeighborhoodPoint(Tile target, TileNeighborhood? prefferedSide = null)
+    {
+      var set = new List<TileNeighborhood>();
+      if (prefferedSide != null)
+      {
+        set.Add(prefferedSide.Value);
+      }
+      allNeighborhoods.Shuffle();
+      set.AddRange(allNeighborhoods.Where(i => !set.Contains(i)));
+      return GetEmptyNeighborhoodPoint(target, set);
+    }
+
+    public virtual bool IsTileEmpty(Tile tile)
+    {
+      return tile != null && tile.IsEmpty;
+    }
+
+    protected virtual Point GetEmptyNeighborhoodPoint(Tile target, List<TileNeighborhood> sides)
+    {
+      Point pt = Point.Invalid;
+      foreach (var side in sides)
+      {
+        Tile tile = GetNeighborTile(target, side);
+        if (IsTileEmpty(tile))
+        {
+          pt = tile.point;
+          break;
+        }
+      }
+
+      return pt;
+    }
+
+    public bool IsPointInBoundaries(Point pt)
+    {
+      return pt.x >= 0 && pt.y >= 0 && pt.x < this.Width && pt.y < this.Height;
     }
 
   }
