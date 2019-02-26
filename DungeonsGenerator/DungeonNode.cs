@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -198,8 +199,8 @@ namespace Dungeons
         return true;
       if (neibs.Count != 2)
         return false;
-      if (neibs.Count(i => i.point.x == wall.point.x) == 2 ||
-        neibs.Count(i => i.point.y == wall.point.y) == 2)
+      if (neibs.Count(i => i.point.X == wall.point.X) == 2 ||
+        neibs.Count(i => i.point.Y == wall.point.Y) == 2)
         return false;
       return true;
 
@@ -264,16 +265,16 @@ namespace Dungeons
       switch (neighborhood)
       {
         case TileNeighborhood.North:
-          pt.y -= 1;
+          pt.Y -= 1;
           break;
         case TileNeighborhood.South:
-          pt.y += 1;
+          pt.Y += 1;
           break;
         case TileNeighborhood.East:
-          pt.x += 1;
+          pt.X += 1;
           break;
         case TileNeighborhood.West:
-          pt.x -= 1;
+          pt.X -= 1;
           break;
         default:
           break;
@@ -307,36 +308,36 @@ namespace Dungeons
 
     public virtual Tile GetTile(Point point)
     {
-      if (point.x < 0 || point.y < 0)
+      if (point.X < 0 || point.Y < 0)
         return null;
-      if (point.x >= Width || point.y >= Height)
+      if (point.X >= Width || point.Y >= Height)
         return null;
-      return tiles[point.y, point.x];
+      return tiles[point.Y, point.X];
     }
 
     public virtual bool SetTile(Tile tile, Point point, bool resetOldTile = true, bool revealReseted = true)
     {
-      if (point.x < 0 || point.y < 0)
+      if (point.X < 0 || point.Y < 0)
         return false;
       if (AppendMazeStartPoint != null)
       {
-        point.x -= AppendMazeStartPoint.Value.x;
-        point.y -= AppendMazeStartPoint.Value.y;
+        point.X -= AppendMazeStartPoint.Value.X;
+        point.Y -= AppendMazeStartPoint.Value.Y;
       }
-      if (point.x >= Width || point.y >= Height)
+      if (point.X >= Width || point.Y >= Height)
         return false;
 
-      if (tiles[point.y, point.x] == tile && tile.point == point)
+      if (tiles[point.Y, point.X] == tile && tile.point == point)
         return true;
 
-      if (tiles[point.y, point.x] != null)
+      if (tiles[point.Y, point.X] != null)
       {
-        var prev = tiles[point.y, point.x];
+        var prev = tiles[point.Y, point.X];
         if (tile != null && tile.dungeonNodeIndex < 0)
           tile.dungeonNodeIndex = prev.dungeonNodeIndex;
       }
 
-      tiles[point.y, point.x] = tile;
+      tiles[point.Y, point.X] = tile;
 
       if (tile != null)
       {
@@ -345,7 +346,7 @@ namespace Dungeons
         if (resetOldTile)
         {
           //reset old tile
-          if (tile.IsAtValidPoint && (tile.point != point) && Width > tile.point.x && Height > tile.point.y)
+          if (tile.IsAtValidPoint && (tile.point != point) && Width > tile.point.X && Height > tile.point.Y)
           {
             var emp = GenerateEmptyTile();
             if(emp != null)
@@ -429,9 +430,9 @@ namespace Dungeons
       {
         childMaze.NodeIndex = ChildIslands.Count * -1;
       }
-      for (int row = 0; row < childMazeMaxSize.Value.y; row++)
+      for (int row = 0; row < childMazeMaxSize.Value.Y; row++)
       {
-        for (int col = 0; col < childMazeMaxSize.Value.x; col++)
+        for (int col = 0; col < childMazeMaxSize.Value.X; col++)
         {
           var tileInChildMaze = childMaze.tiles[row, col];
           if (tileInChildMaze == null)
@@ -450,8 +451,8 @@ namespace Dungeons
             }
           }
           SetCorner(childMazeMaxSize, row, col, tileInChildMaze);
-          int destCol = col + start.x;
-          int destRow = row + start.y;
+          int destCol = col + start.X;
+          int destRow = row + start.Y;
           tileInChildMaze.point = new Point(destCol, destRow);
 
           if (childIsland)
@@ -466,15 +467,15 @@ namespace Dungeons
     private static void SetCorner(Point? maxSize, int row, int col, Tile tile)
     {
       if ((col == 1 && row == 1)
-          || (col == maxSize.Value.x - 2 && (row == 1 || row == maxSize.Value.y - 2))
-          || (col == 1 && row == maxSize.Value.y - 2)
+          || (col == maxSize.Value.X - 2 && (row == 1 || row == maxSize.Value.Y - 2))
+          || (col == 1 && row == maxSize.Value.Y - 2)
       )
       {
         if (col == 1 && row == 1)
           tile.corner = TileCorner.SouthWest;
-        else if (col == 1 && row == maxSize.Value.y - 2)
+        else if (col == 1 && row == maxSize.Value.Y - 2)
           tile.corner = TileCorner.NorthWest;
-        else if (col == maxSize.Value.x - 2 && row == maxSize.Value.y - 2)
+        else if (col == maxSize.Value.X - 2 && row == maxSize.Value.Y - 2)
           tile.corner = TileCorner.NorthEast;
         else
           tile.corner = TileCorner.SouthEast;
@@ -490,9 +491,9 @@ namespace Dungeons
         for (int col = 0; col < Width; col++)
         {
           var tile = tiles[row, col];
-          if (tile != null && tile.point.x > maxX)
+          if (tile != null && tile.point.X > maxX)
             maxX = col;
-          if (tile != null && tile.point.y > maxY)
+          if (tile != null && tile.point.Y > maxY)
             maxY = row;
         }
       }
@@ -580,7 +581,7 @@ namespace Dungeons
 
     public Tile GenerateEmptyTile()
     {
-      return GenerateEmptyTile(Point.Invalid);
+      return GenerateEmptyTile(GenerationConstraints.InvalidPoint);
     }
 
     public virtual Tile GenerateEmptyTile(Point pt)
@@ -664,7 +665,7 @@ namespace Dungeons
 
     protected virtual Point GetEmptyNeighborhoodPoint(Tile target, List<TileNeighborhood> sides)
     {
-      Point pt = Point.Invalid;
+      Point pt = GenerationConstraints.InvalidPoint;
       foreach (var side in sides)
       {
         Tile tile = GetNeighborTile(target, side);
@@ -680,7 +681,7 @@ namespace Dungeons
 
     public bool IsPointInBoundaries(Point pt)
     {
-      return pt.x >= 0 && pt.y >= 0 && pt.x < this.Width && pt.y < this.Height;
+      return pt.X >= 0 && pt.Y >= 0 && pt.X < this.Width && pt.Y < this.Height;
     }
 
   }

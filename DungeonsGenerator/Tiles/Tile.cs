@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -45,7 +46,7 @@ namespace Dungeons.Tiles
     {
     }
 
-    public Tile(char symbol) : this(Point.Invalid, symbol)
+    public Tile(char symbol) : this(GenerationConstraints.InvalidPoint, symbol)
     {
 
     }
@@ -69,7 +70,7 @@ namespace Dungeons.Tiles
 
     public bool IsAtValidPoint
     {
-      get { return point.IsValid; }
+      get { return point != GenerationConstraints.InvalidPoint; }
     }
 
     public bool IsEmpty { get { return Symbol == Constants.SymbolBackground; } }
@@ -129,12 +130,12 @@ namespace Dungeons.Tiles
 
     public override string ToString()
     {
-      return Symbol + " " + dungeonNodeIndex + " [" + point.x + "," + point.y + "]" + " " + GetHashCode();
+      return Symbol + " " + dungeonNodeIndex + " [" + point.X + "," + point.Y + "]" + " " + GetHashCode();
     }
 
     public double DistanceFrom(Tile other)
     {
-      var dPowered = (Math.Pow(point.x - other.point.x, 2) + Math.Pow(point.y - other.point.y, 2));
+      var dPowered = (Math.Pow(point.X - other.point.X, 2) + Math.Pow(point.Y - other.point.Y, 2));
       return Math.Sqrt(dPowered);
     }
   }

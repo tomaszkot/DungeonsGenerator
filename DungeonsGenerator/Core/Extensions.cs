@@ -1,11 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Dungeons.Core
 {
   public static class Extensions
   {
+    static Point InvalidPoint = GenerationConstraints.InvalidPoint;
+
+    public static bool IsValid(this Point pt)
+    {
+      return pt != InvalidPoint;
+    }
+
+    public static Point Invalid(this Point pt)
+    {
+      return InvalidPoint;
+    }
+
     //ForEch was not compiling for Win8.1 phone :/
     public static void Each<T>(this IEnumerable<T> source, Action<T> action)
     {

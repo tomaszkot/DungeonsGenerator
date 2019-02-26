@@ -1,15 +1,20 @@
-﻿namespace Dungeons.Core
+﻿using System.Drawing;
+
+namespace Dungeons.Core
 {
+
   public class GenerationConstraints
   {
-    Point min = Point.Invalid;
-    Point max = Point.Invalid;
+    public static Point InvalidPoint = new Point(-1, -1);
+
+    Point min = InvalidPoint;
+    Point max = InvalidPoint;
 
     public Point Min
     {
       get
       {
-        return min;
+         return min;
       }
 
       set
@@ -51,10 +56,10 @@
 
     public bool IsInside(Point point)
     {
-      var minXOK = !IsBorderUsed(Min.x) || point.x > Min.x;
-      var minYOK = !IsBorderUsed(Min.y) || point.y > Min.y;
-      var maxXOK = !IsBorderUsed(Max.x) || point.x < Max.x;
-      var maxYOK = !IsBorderUsed(Max.y) || point.y < Max.y;
+      var minXOK = !IsBorderUsed(Min.X) || point.X > Min.X;
+      var minYOK = !IsBorderUsed(Min.Y) || point.Y > Min.Y;
+      var maxXOK = !IsBorderUsed(Max.X) || point.X < Max.X;
+      var maxYOK = !IsBorderUsed(Max.Y) || point.Y < Max.Y;
       return minXOK && minYOK && maxXOK && maxYOK;
     }
   }

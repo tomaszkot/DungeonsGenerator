@@ -2,6 +2,7 @@
 using Dungeons.Tiles;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Dungeons
@@ -154,7 +155,7 @@ namespace Dungeons
     public Point GetInteriorStartingPoint(int minSizeReduce = 6, DungeonNode child = null)
     {
       if (!Inited())
-        return Point.Invalid;
+        return GenerationConstraints.InvalidPoint;
       int islandWidth = child != null ? child.Width : (this.Width - minSizeReduce);
 
       int islandHeight = child != null ? child.Height : (this.Height - minSizeReduce);
@@ -175,12 +176,12 @@ namespace Dungeons
       var startPoint = GetInteriorStartingPoint();
       if (interior == Interior.T)
       {
-        int endX = Width - startPoint.x;
-        points = GenerateWallPoints(startPoint.x, endX, startPoint.y, startPoint.y + 1, 1);
+        int endX = Width - startPoint.X;
+        points = GenerateWallPoints(startPoint.X, endX, startPoint.Y, startPoint.Y + 1, 1);
 
-        int legX = (startPoint.x + endX) / 2;
+        int legX = (startPoint.X + endX) / 2;
         var pointsY = new List<Point>();
-        pointsY.AddRange(GenerateWallPoints(legX, legX + 1, startPoint.y, Height - startPoint.y));
+        pointsY.AddRange(GenerateWallPoints(legX, legX + 1, startPoint.Y, Height - startPoint.Y));
 
         if (pointsY.Count > 6)
           pointsY.RemoveAt(pointsY.Count / 2);
@@ -189,14 +190,14 @@ namespace Dungeons
       }
       else if (interior == Interior.L)
       {
-        int legX = startPoint.x;
+        int legX = startPoint.X;
         //vertical
-        points.AddRange(GenerateWallPoints(legX, legX + 1, startPoint.y, Height - startPoint.y));
+        points.AddRange(GenerateWallPoints(legX, legX + 1, startPoint.Y, Height - startPoint.Y));
         if (points.Count > 6)
           points.RemoveAt(points.Count / 2);
 
-        int endX = Width - startPoint.x;
-        int endY = Height - startPoint.y;
+        int endX = Width - startPoint.X;
+        int endY = Height - startPoint.Y;
         //horiz
         points.AddRange(GenerateWallPoints(legX, endX, endY - 1, endY));
       }
@@ -284,8 +285,8 @@ namespace Dungeons
         if (destStartPoint != null)
         {
           var nextPoint = new Point();
-          nextPoint.x = destStartPoint.Value.x;
-          nextPoint.y = destStartPoint.Value.y + islandHeight + 1;
+          nextPoint.X = destStartPoint.Value.X;
+          nextPoint.Y = destStartPoint.Value.Y + islandHeight + 1;
           destStartPoint = nextPoint;
         }
       }

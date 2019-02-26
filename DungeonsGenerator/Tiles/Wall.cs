@@ -1,4 +1,5 @@
 ﻿using Dungeons.Core;
+using System.Drawing;
 
 namespace Dungeons.Tiles
 {
@@ -16,7 +17,7 @@ namespace Dungeons.Tiles
     {
     }
 
-    public Wall() : this(Point.Invalid) { }
+    public Wall() : this(new Point().Invalid()) { }
 
 
   }

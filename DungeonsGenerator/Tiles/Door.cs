@@ -1,5 +1,6 @@
 ﻿using Dungeons.Core;
 using System;
+using System.Drawing;
 
 namespace Dungeons.Tiles
 {
@@ -10,7 +11,7 @@ namespace Dungeons.Tiles
       color = ConsoleColor.Yellow;
     }
 
-    public Door() : this(Point.Invalid)
+    public Door() : this(GenerationConstraints.InvalidPoint)
     {
 
     }
