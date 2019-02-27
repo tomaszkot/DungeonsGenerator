@@ -235,7 +235,7 @@ namespace Dungeons
       var tiles = new List<Wall>();
       foreach (var pt in points)
       {
-        var wall = new Wall();
+        var wall = dn.CreateWall();
         dn.SetTile(wall, pt);
         tiles.Add(wall);
       }

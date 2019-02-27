@@ -16,6 +16,12 @@ namespace Dungeons
     void PrintNewLine();
   }
 
+  public interface ITilesFactory
+  {
+    Wall CreateWall();
+    Door CreateDoor();
+  }
+
   public class PrintInfo
   {
     public bool PrintNodeIndexes = false;
@@ -28,7 +34,7 @@ namespace Dungeons
 
   [XmlRoot("Node", Namespace = "DungeonNode")]
   [XmlInclude(typeof(Wall))]
-  public class DungeonNode 
+  public class DungeonNode : ITilesFactory
   {
     [XmlIgnore]
     [JsonIgnore]
@@ -630,9 +636,19 @@ namespace Dungeons
       {
         for (int i = 0; i < toDel.Count; i++)
         {
-          this.SetTile(new Wall(), toDel[i].point);
+          this.SetTile(CreateWall(), toDel[i].point);
         }
       }
+    }
+
+    public virtual Wall CreateWall()
+    {
+      return new Wall();
+    }
+
+    public virtual Door CreateDoor()
+    {
+      return new Door();
     }
 
     public void Reveal(bool reveal)
