@@ -25,7 +25,7 @@ namespace Dungeons.Tiles
     private char symbol = Constants.SymbolBackground;
     public string name;
     public ConsoleColor color = ConsoleColor.White;
-    
+
     /// <summary>
     /// The index of the node (room) the tile belongs to
     /// </summary>
@@ -122,6 +122,8 @@ namespace Dungeons.Tiles
         symbol = value;
       }
     }
+
+    public ConsoleColor Color { get => color; set => color = value; }
 
     public bool IsAtSamePosition(Tile other)
     {

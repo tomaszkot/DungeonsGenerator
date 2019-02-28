@@ -8,7 +8,7 @@ namespace Dungeons.Tiles
   {
     public Door(Point point) : base(point, Constants.SymbolDoor)
     {
-      color = ConsoleColor.Yellow;
+      Color = ConsoleColor.Yellow;
     }
 
     public Door() : this(GenerationConstraints.InvalidPoint)

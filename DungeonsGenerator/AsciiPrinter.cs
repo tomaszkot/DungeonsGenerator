@@ -28,7 +28,7 @@ namespace Dungeons
       var symbol = ' ';
       if (tile != null)
       {
-        color = tile.color;
+        color = tile.Color;
         if (pi.PrintNodeIndexes)
         {
           Console.ForegroundColor = color;
