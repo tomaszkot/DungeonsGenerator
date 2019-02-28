@@ -20,12 +20,12 @@ namespace Dungeons.Tiles
   public class Tile
   {
     //members public for speed purposes
-    public Point point;
+    public Point Point;
 
     private char symbol = Constants.SymbolBackground;
     public string name;
     public ConsoleColor color = ConsoleColor.White;
-
+    
     /// <summary>
     /// The index of the node (room) the tile belongs to
     /// </summary>
@@ -54,7 +54,7 @@ namespace Dungeons.Tiles
     public Tile(Point point, char symbol)
     {
       this.Name = GetType().Name;
-      this.point = point;
+      this.Point = point;
       this.Symbol = symbol;
       this.revealed = true;
     }
@@ -70,7 +70,7 @@ namespace Dungeons.Tiles
 
     public bool IsAtValidPoint
     {
-      get { return point != GenerationConstraints.InvalidPoint; }
+      get { return Point != GenerationConstraints.InvalidPoint; }
     }
 
     public bool IsEmpty { get { return Symbol == Constants.SymbolBackground; } }
@@ -125,17 +125,17 @@ namespace Dungeons.Tiles
 
     public bool IsAtSamePosition(Tile other)
     {
-      return point.Equals(other.point);
+      return Point.Equals(other.Point);
     }
 
     public override string ToString()
     {
-      return Symbol + " " + dungeonNodeIndex + " [" + point.X + "," + point.Y + "]" + " " + GetHashCode();
+      return Symbol + " " + dungeonNodeIndex + " [" + Point.X + "," + Point.Y + "]" + " " + GetHashCode();
     }
 
     public double DistanceFrom(Tile other)
     {
-      var dPowered = (Math.Pow(point.X - other.point.X, 2) + Math.Pow(point.Y - other.point.Y, 2));
+      var dPowered = (Math.Pow(Point.X - other.Point.X, 2) + Math.Pow(Point.Y - other.Point.Y, 2));
       return Math.Sqrt(dPowered);
     }
   }
