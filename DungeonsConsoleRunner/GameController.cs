@@ -11,7 +11,8 @@ namespace DungeonsConsoleRunner
   {
     IGameGenerator generator = new Generator();
     PrintInfo printInfo = new PrintInfo();
-    DungeonNode node;
+
+    public virtual DungeonNode Node { get; set; }
 
     public GameController(IGameGenerator generator)
     {
@@ -55,7 +56,7 @@ namespace DungeonsConsoleRunner
 
     protected void Reload()
     {
-      node = generator.Generate();
+      Node = generator.Generate();
       Redraw();
     }
 
@@ -63,9 +64,11 @@ namespace DungeonsConsoleRunner
     {
       Console.Clear();
       PrintUsage();
-      if (node != null)
+      if (Node != null)
       {
-        node.Print(printInfo);
+        Console.WriteLine("");
+        Console.WriteLine(Node.Description);
+        Node.Print(printInfo);
       }
     }
 

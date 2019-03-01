@@ -3,12 +3,7 @@ using System.Drawing;
 
 namespace Dungeons.Tiles
 {
-  public interface IObstacleTile
-  {
-
-  }
-
-  public class Wall : Tile, IObstacleTile
+  public class Wall : Tile, IObstacle
   {
     
     public bool IsSide { get; set; }

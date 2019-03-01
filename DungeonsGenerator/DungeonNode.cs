@@ -116,6 +116,11 @@ namespace Dungeons
       this.tiles = tiles;
     }
 
+    public virtual string Description
+    {
+      get { return "Dungeon"; }
+    }
+
     public Point? AppendMazeStartPoint { get; set; }
 
     public int NodeIndex
@@ -289,7 +294,7 @@ namespace Dungeons
       return pt;
     }
 
-    public Point? GetEmptyPoint()
+    public Point? GetFirstEmptyPoint()
     {
       var tile = GetEmptyTiles().FirstOrDefault();
       return tile?.Point;
@@ -612,6 +617,7 @@ namespace Dungeons
       if (pi == null)
         pi = new PrintInfo();
       var ap = new AsciiPrinter(this);
+      
       ap.Print(ap, pi);
     }
 
