@@ -10,11 +10,11 @@ using System.Xml.Serialization;
 
 namespace Dungeons
 {
-  public interface INodePrinter
-  {
-    void Print(Tile tile, PrintInfo pi);
-    void PrintNewLine();
-  }
+  //public interface INodePrinter
+  //{
+  //  void Print(Tile tile, PrintInfo pi);
+  //  void PrintNewLine();
+  //}
 
   //public interface ITilesFactory
   //{

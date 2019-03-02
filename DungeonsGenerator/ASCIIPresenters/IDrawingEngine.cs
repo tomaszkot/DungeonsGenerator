@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dungeons.ASCIIPresenters
 {
-  public interface IPresenter
+  //basic interface for ASCII displaying
+  public interface IDrawingEngine
   {
     void WriteLine(string line);
     void Write(char v);
@@ -17,6 +14,4 @@ namespace Dungeons.ASCIIPresenters
     void SetCursorPosition(int x, int y);
     bool CursorVisible { set; }
   }
-
-  
 }

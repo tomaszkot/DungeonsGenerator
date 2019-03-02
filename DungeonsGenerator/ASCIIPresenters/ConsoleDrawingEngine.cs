@@ -2,7 +2,7 @@
 
 namespace Dungeons.ASCIIPresenters
 {
-  public class ConsolePresenter : IPresenter
+  public class ConsoleDrawingEngine : IDrawingEngine
   {
     public bool CursorVisible { set { Console.CursorVisible = value; } }
     public ConsoleColor ForegroundColor { get => Console.ForegroundColor; set => Console.ForegroundColor = value; }

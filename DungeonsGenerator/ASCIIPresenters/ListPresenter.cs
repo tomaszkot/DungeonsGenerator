@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Dungeons.ASCIIPresenters
 {
-  public class Presenter
+  public class Item
   {
     int x;
     int y;
 
-    public Presenter(int x, int y)
+    public Item(int x, int y)
     {
       this.X = x;
       this.Y = y;
@@ -28,7 +28,7 @@ namespace Dungeons.ASCIIPresenters
   }
 
 
-  public class ListPresenter : Presenter
+  public class ListPresenter : Item
   {
     List<ListItem> lines;
     string caption;
@@ -42,11 +42,10 @@ namespace Dungeons.ASCIIPresenters
       this.caption = caption;
     }
 
-    public virtual void Redraw(IPresenter presenter)
+    public virtual void Redraw(IDrawingEngine presenter)
     {
       presenter.SetCursorPosition(X, Y);
-      for (int i = 0; i < borderSize; i++)
-        presenter.Write(border);
+      DrawBorder(presenter);
 
       presenter.WriteLine("");
       presenter.ForegroundColor = ConsoleColor.Cyan;
@@ -61,6 +60,12 @@ namespace Dungeons.ASCIIPresenters
         presenter.ForegroundColor = line.Color;
         presenter.WriteLine(line.Text);
       }
+      for (int i = 0; i < borderSize; i++)
+        presenter.Write(border);
+    }
+
+    private void DrawBorder(IDrawingEngine presenter)
+    {
       for (int i = 0; i < borderSize; i++)
         presenter.Write(border);
     }

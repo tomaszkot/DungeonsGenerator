@@ -20,7 +20,7 @@ namespace DungeonsConsoleRunner
     public NodePresenter NodePrinter { get => nodePrinter; set => nodePrinter = value; }
     public int DungeonX { get => dungeonX; set => dungeonX = value; }
     public int DungeonY { get => dungeonY; set => dungeonY = value; }
-    public IPresenter Presenter { get; set; } = new ConsolePresenter();
+    public IDrawingEngine Presenter { get; set; } = new ConsoleDrawingEngine();
 
     public GameController(IGameGenerator generator)
     {
