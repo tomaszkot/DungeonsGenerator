@@ -47,7 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsciiPrinter.cs" />
+    <Compile Include="ASCIIPresenters\ConsolePresenter.cs" />
+    <Compile Include="ASCIIPresenters\NodePresenter.cs" />
+    <Compile Include="ASCIIPresenters\ListPresenter.cs" />
     <Compile Include="Core\GenerationConstraints.cs" />
     <Compile Include="Core\GenericEventArgs.cs" />
     <Compile Include="Core\RandHelper.cs" />
@@ -57,6 +59,7 @@
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="DungeonNode.cs" />
+    <Compile Include="ASCIIPresenters\ASCIIPresenter.cs" />
     <Compile Include="NodeInteriorGenerator.cs" />
     <Compile Include="Tiles\Door.cs" />
     <Compile Include="Tiles\IObstacle.cs" />

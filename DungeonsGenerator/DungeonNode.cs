@@ -612,14 +612,7 @@ namespace Dungeons
 
     public EntranceSide? AppendedSide { get; private set; }
 
-    public virtual void Print(PrintInfo pi = null)
-    {
-      if (pi == null)
-        pi = new PrintInfo();
-      var ap = new AsciiPrinter(this);
-      
-      ap.Print(ap, pi);
-    }
+    
 
     /// <summary>
     /// Delete unreachable doors 
@@ -704,6 +697,20 @@ namespace Dungeons
     public bool IsPointInBoundaries(Point pt)
     {
       return pt.X >= 0 && pt.Y >= 0 && pt.X < this.Width && pt.Y < this.Height;
+    }
+
+    public List<T> GetTiles<T>() where T : class
+    {
+      var res = new List<T>();
+      foreach (var tile in Tiles)
+      {
+        if (tile is T)
+        {
+          res.Add(tile as T);
+        }
+      }
+
+      return res;
     }
 
   }

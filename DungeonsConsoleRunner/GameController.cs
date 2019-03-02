@@ -1,4 +1,5 @@
 ﻿using Dungeons;
+using Dungeons.ASCIIPresenters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,15 @@ namespace DungeonsConsoleRunner
   {
     IGameGenerator generator = new Generator();
     PrintInfo printInfo = new PrintInfo();
+    NodePresenter nodePrinter;
+    int dungeonX;
+    int dungeonY;
 
-    public virtual DungeonNode Node { get; set; }
+    public virtual DungeonNode Dungeon { get; set; }
+    public NodePresenter NodePrinter { get => nodePrinter; set => nodePrinter = value; }
+    public int DungeonX { get => dungeonX; set => dungeonX = value; }
+    public int DungeonY { get => dungeonY; set => dungeonY = value; }
+    public IPresenter Presenter { get; set; } = new ConsolePresenter();
 
     public GameController(IGameGenerator generator)
     {
@@ -27,7 +35,7 @@ namespace DungeonsConsoleRunner
       bool exit = false;
       while (!exit)
       {
-        var key = Console.ReadKey();
+        var key = Console.ReadKey(true);
         exit = HandleKey(key);
       }
     }
@@ -56,7 +64,8 @@ namespace DungeonsConsoleRunner
 
     protected void Reload()
     {
-      Node = generator.Generate();
+      Dungeon = generator.Generate();
+      NodePrinter = new NodePresenter(Dungeon, Presenter, DungeonX, DungeonY = 10);
       Redraw();
     }
 
@@ -64,22 +73,27 @@ namespace DungeonsConsoleRunner
     {
       Console.Clear();
       PrintUsage();
-      if (Node != null)
+      if (Dungeon != null)
       {
-        Console.WriteLine("");
-        Console.WriteLine(Node.Description);
-        Node.Print(printInfo);
+        PrintDungeonDesc();
+        NodePrinter.Print(printInfo);
       }
     }
 
-    private void PrintUsage()
+    private void PrintDungeonDesc()
     {
-      //Console.WriteLine(Environment.NewLine);
-      //Console.WriteLine(Environment.NewLine);
-      Console.WriteLine("Usage:");
-      Console.WriteLine("R - reload");
-      Console.WriteLine("D - toggle node_indexes/symbols");
-      Console.WriteLine("Esc - exit");
+      Presenter.WriteLine("");
+      Presenter.WriteLine(Dungeon.Description);
+    }
+
+    protected void PrintUsage()
+    {
+      Presenter.WriteLine("--");
+      Presenter.WriteLine("Usage:");
+      Presenter.WriteLine("R - reload");
+      Presenter.WriteLine("D - toggle node_indexes/symbols");
+      Presenter.WriteLine("Esc - exit");
+      Presenter.WriteLine("--");
     }
   }
 }
