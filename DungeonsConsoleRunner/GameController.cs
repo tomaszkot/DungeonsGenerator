@@ -12,13 +12,15 @@ namespace DungeonsConsoleRunner
   {
     IGameGenerator generator = new Generator();
     PrintInfo printInfo = new PrintInfo();
-    int dungeonX;
-    int dungeonY;
+    public int OriginX = 2;
+    public int OriginY = 2;
+
+    ListPresenter usagePresenter;
 
     public virtual DungeonNode Dungeon { get; set; }
     public DungeonPresenter DungeonPresenter { get; set; }
-    public int DungeonX { get => dungeonX; set => dungeonX = value; }
-    public int DungeonY { get => dungeonY; set => dungeonY = value; }
+    public int DungeonX { get ; set ; }
+    public int DungeonY { get; set; } = 10;
     public IDrawingEngine Presenter { get; set; } = new ConsoleDrawingEngine();
 
     public GameController(IGameGenerator generator)
@@ -64,14 +66,19 @@ namespace DungeonsConsoleRunner
     protected void Reload()
     {
       Dungeon = generator.Generate();
-      DungeonPresenter = new DungeonPresenter(Dungeon, Presenter, DungeonX, DungeonY = 10);
+      DungeonPresenter = new DungeonPresenter(Dungeon, Presenter, OriginX+ DungeonX, OriginY + DungeonY);
+      usagePresenter = new ListPresenter("Usage", OriginX, OriginY);
+           
+      usagePresenter.Lines.Add(new ListItem("R - reload"));
+      usagePresenter.Lines.Add(new ListItem("D - toggle node_indexes/symbols"));
+      usagePresenter.Lines.Add(new ListItem("Esc - exit"));
       Redraw();
     }
 
     protected virtual void Redraw()
     {
       Console.Clear();
-      PrintUsage();
+      usagePresenter.Redraw(Presenter);
       if (Dungeon != null)
       {
         PrintDungeonDesc();
@@ -81,18 +88,11 @@ namespace DungeonsConsoleRunner
 
     private void PrintDungeonDesc()
     {
-      Presenter.WriteLine("");
+      //Presenter.WriteLine("");
+      Presenter.SetCursorPosition(OriginX, Presenter.GetCursorPosition().Item2);
       Presenter.WriteLine(Dungeon.Description);
+      Presenter.WriteLine("");
     }
 
-    protected void PrintUsage()
-    {
-      Presenter.WriteLine("--");
-      Presenter.WriteLine("Usage:");
-      Presenter.WriteLine("R - reload");
-      Presenter.WriteLine("D - toggle node_indexes/symbols");
-      Presenter.WriteLine("Esc - exit");
-      Presenter.WriteLine("--");
-    }
   }
 }

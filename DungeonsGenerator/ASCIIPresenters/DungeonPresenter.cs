@@ -73,6 +73,7 @@ namespace Dungeons.ASCIIPresenters
       if (pi == null)
         pi = new PrintInfo();
 
+
       if (PositionBasedPrinting())
         presenter.SetCursorPosition(left, top);
       for (int row = 0; row < node.Height; row++)

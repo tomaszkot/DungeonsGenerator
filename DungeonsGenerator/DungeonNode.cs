@@ -25,6 +25,8 @@ namespace Dungeons
   public class PrintInfo
   {
     public bool PrintNodeIndexes = false;
+    public int OriginX { get; set; }
+    public int OriginY { get; set; }
   }
 
   public enum EntranceSide { Left, Right, Top, Bottom };

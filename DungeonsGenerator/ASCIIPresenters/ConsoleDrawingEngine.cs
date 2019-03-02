@@ -12,6 +12,11 @@ namespace Dungeons.ASCIIPresenters
       Console.SetCursorPosition(x, y);
     }
 
+    public Tuple<int, int> GetCursorPosition()
+    {
+      return new Tuple<int, int>(Console.CursorLeft, Console.CursorTop);
+    }
+
     public void Write(char v)
     {
       Console.Write(v);

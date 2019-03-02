@@ -8,23 +8,55 @@ namespace Dungeons.ASCIIPresenters
 {
   public class Item
   {
-    int x;
-    int y;
+    IDrawingEngine presenter;
+    public int CurrentX { get; set; }
+    public int CurrentY { get; set; }
 
     public Item(int x, int y)
     {
-      this.X = x;
-      this.Y = y;
+      this.OriginPositionX = x;
+      this.OriginPositionY = y;
+      CurrentX = OriginPositionX;
+      CurrentY = OriginPositionY;
     }
 
-    public int X { get => x; set => x = value; }
-    public int Y { get => y; set => y = value; }
+    public int OriginPositionX { get; set; }
+    public int OriginPositionY { get; set; }
+    public IDrawingEngine Presenter { get => presenter; set => presenter = value; }
+
+    protected void Reset()
+    {
+      CurrentX = OriginPositionX;
+      CurrentY = OriginPositionY;
+      UpdatePresenterPos();
+    }
+
+    protected void WriteLine(string line)
+    {
+      UpdatePresenterPos();
+      var debug = "";// " (at " + CurrentX + ", " + CurrentY;
+      Presenter.WriteLine(line + " " + debug);
+      CurrentX = OriginPositionX;
+      CurrentY++;
+      UpdatePresenterPos();
+    }
+
+    private void UpdatePresenterPos()
+    {
+      Presenter.SetCursorPosition(CurrentX, CurrentY);
+    }
   }
 
   public class ListItem
   {
     public ConsoleColor Color = ConsoleColor.White;
     public string Text;
+
+    public ListItem() { }
+    public ListItem(string txt)
+    {
+      Text = txt;
+    }
   }
 
 
@@ -32,7 +64,7 @@ namespace Dungeons.ASCIIPresenters
   {
     string caption;
     char border = '-';
-    int borderSize = 20;
+    int borderSize = 25;
 
     public List<ListItem> Lines { get ; set ; } = new List<ListItem>();
 
@@ -43,30 +75,32 @@ namespace Dungeons.ASCIIPresenters
 
     public virtual void Redraw(IDrawingEngine presenter)
     {
-      presenter.SetCursorPosition(X, Y);
+      Presenter = presenter;
+      Reset();
+      //presenter.SetCursorPosition(OriginPositionX, OriginPositionY);
+      DrawBorder(presenter);
+      presenter.ForegroundColor = ConsoleColor.Cyan;
+      WriteLine(caption);
       DrawBorder(presenter);
 
-      presenter.WriteLine("");
-      presenter.ForegroundColor = ConsoleColor.Cyan;
-      presenter.WriteLine(caption);
-      presenter.ForegroundColor = ConsoleColor.White;
-      for (int i = 0; i < borderSize; i++)
-        presenter.Write(border);
-
-      presenter.WriteLine("");
       foreach (var line in Lines)
       {
         presenter.ForegroundColor = line.Color;
-        presenter.WriteLine(line.Text);
+        WriteLine(line.Text);
       }
-      for (int i = 0; i < borderSize; i++)
-        presenter.Write(border);
+
+      DrawBorder(presenter);
+
+      //WriteLine("-");
     }
 
     private void DrawBorder(IDrawingEngine presenter)
     {
+      presenter.ForegroundColor = ConsoleColor.White;
+      var line = "";
       for (int i = 0; i < borderSize; i++)
-        presenter.Write(border);
+        line += border;
+      WriteLine(line);
     }
   }
 }

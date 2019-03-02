@@ -12,6 +12,7 @@ namespace Dungeons.ASCIIPresenters
 
     ConsoleColor ForegroundColor { get; set; }
     void SetCursorPosition(int x, int y);
+    Tuple<int,int> GetCursorPosition();
     bool CursorVisible { set; }
   }
 }
