@@ -15,11 +15,11 @@ namespace Dungeons.ASCIIPresenters
     int top;
     int left;
     IDrawingEngine presenter;
+    //public DungeonNode Node { get => node; set => node = value; }
 
-    public DungeonPresenter(DungeonNode node, IDrawingEngine presenter, int left = -1, int top = -1)
+    public DungeonPresenter(IDrawingEngine presenter, int left = -1, int top = -1)
     {
       this.presenter = presenter;
-      this.node = node;
       this.top = top;
       this.left = left;
       presenter.CursorVisible = false;
@@ -53,13 +53,13 @@ namespace Dungeons.ASCIIPresenters
       presenter.Write(symbol);
     }
 
-    public virtual void RefreshPosition(PrintInfo pi, int x, int y)
+    public virtual void RefreshPosition(DungeonNode Node, PrintInfo pi, int x, int y)
     {
       if (pi == null)
         pi = new PrintInfo();
       Debug.Assert(PositionBasedPrinting());
       presenter.SetCursorPosition(left + x, top + y);
-      var tile = node.GetTile(new Point(x, y));
+      var tile = Node.GetTile(new Point(x, y));
       Print(tile, pi);
     }
 
@@ -68,7 +68,7 @@ namespace Dungeons.ASCIIPresenters
       return top >= 0 && left >= 0;
     }
 
-    public virtual void Redraw(PrintInfo pi)
+    public virtual void Redraw(DungeonNode node, PrintInfo pi)
     {
       if (pi == null)
         pi = new PrintInfo();
@@ -89,6 +89,11 @@ namespace Dungeons.ASCIIPresenters
           }
 
           var tile = node.GetTile(new Point(col, row));
+          if (tile != null && tile.Symbol == '@')
+          {
+            int kk = 0;
+            kk++;
+          }
           Print(tile, pi);
         }
       }

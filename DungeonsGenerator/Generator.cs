@@ -49,7 +49,10 @@ namespace Dungeons
       var minNodeSize = index == 0 && gi.FirstNodeSmaller ? gi.MinNodeSize - gi.MinNodeSize / 2 : gi.MinNodeSize;
       var maxNodeSize = index == 0 && gi.FirstNodeSmaller ? gi.MaxNodeSize - gi.MaxNodeSize / 2 : gi.MaxNodeSize;
 
-      return CreateNode(random.Next(minNodeSize, maxNodeSize), random.Next(minNodeSize, maxNodeSize), gi, index);
+      var width = random.Next(minNodeSize, maxNodeSize);
+      var height = random.Next(minNodeSize, maxNodeSize);
+
+      return CreateNode(width, height , gi, index);
     }
 
     protected virtual DungeonNode CreateNode(int w, int h, GenerationInfo gi, int index)
@@ -71,7 +74,8 @@ namespace Dungeons
       nodes = new List<DungeonNode>();
       var gi = this.CreateLevelGenerationInfo();
       //gi.GenerateOuterWalls = true;
-      for (int i = 0; i < NumberOfNodes; i++)
+      //for (int i = 0; i < NumberOfNodes; i++)
+      for (int i = 0; i < 3; i++)
       {
         var node = CreateNode(i, gi);
         node.Reveal(true);

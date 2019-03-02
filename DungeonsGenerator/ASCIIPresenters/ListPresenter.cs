@@ -64,13 +64,14 @@ namespace Dungeons.ASCIIPresenters
   {
     string caption;
     char border = '-';
-    int borderSize = 25;
+    int width = 25;
 
     public List<ListItem> Lines { get ; set ; } = new List<ListItem>();
 
-    public ListPresenter(string caption, int x, int y) : base(x, y)
+    public ListPresenter(string caption, int x, int y, int width) : base(x, y)
     {
       this.caption = caption;
+      this.width = width;
     }
 
     public virtual void Redraw(IDrawingEngine presenter)
@@ -98,7 +99,7 @@ namespace Dungeons.ASCIIPresenters
     {
       presenter.ForegroundColor = ConsoleColor.White;
       var line = "";
-      for (int i = 0; i < borderSize; i++)
+      for (int i = 0; i < width; i++)
         line += border;
       WriteLine(line);
     }

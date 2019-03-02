@@ -2,6 +2,7 @@
 using Dungeons.ASCIIPresenters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,7 +44,13 @@ namespace DungeonsConsoleRunner
 
     protected virtual void Generate()
     {
-      Reload();
+      Dungeon = generator.Generate();
+      DungeonPresenter = new DungeonPresenter(Presenter, OriginX + DungeonX, OriginY + DungeonY);
+      usagePresenter = new ListPresenter("Usage", OriginX, OriginY, 30);
+
+      usagePresenter.Lines.Add(new ListItem("R - reload"));
+      usagePresenter.Lines.Add(new ListItem("D - toggle node_indexes/symbols"));
+      usagePresenter.Lines.Add(new ListItem("Esc - exit"));
     }
 
     protected virtual bool HandleKey(ConsoleKeyInfo key)
@@ -65,13 +72,7 @@ namespace DungeonsConsoleRunner
 
     protected void Reload()
     {
-      Dungeon = generator.Generate();
-      DungeonPresenter = new DungeonPresenter(Dungeon, Presenter, OriginX+ DungeonX, OriginY + DungeonY);
-      usagePresenter = new ListPresenter("Usage", OriginX, OriginY);
-           
-      usagePresenter.Lines.Add(new ListItem("R - reload"));
-      usagePresenter.Lines.Add(new ListItem("D - toggle node_indexes/symbols"));
-      usagePresenter.Lines.Add(new ListItem("Esc - exit"));
+      Generate();
       Redraw();
     }
 
@@ -82,7 +83,7 @@ namespace DungeonsConsoleRunner
       if (Dungeon != null)
       {
         PrintDungeonDesc();
-        DungeonPresenter.Redraw(printInfo);
+        DungeonPresenter.Redraw(Dungeon, printInfo);
       }
     }
 

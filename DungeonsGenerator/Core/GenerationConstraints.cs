@@ -1,10 +1,13 @@
-﻿using System.Drawing;
+﻿using Dungeons.Tiles;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace Dungeons.Core
 {
 
   public class GenerationConstraints
   {
+    public List<Tile> Tiles;
     public static Point InvalidPoint = new Point(-1, -1);
 
     Point min = InvalidPoint;
