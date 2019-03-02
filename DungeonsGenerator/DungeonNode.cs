@@ -39,7 +39,7 @@ namespace Dungeons
   public class DungeonNode 
   {
     [XmlIgnore]
-    [JsonIgnore]
+    //[JsonIgnore]
     protected Tile[,] tiles;
     protected GenerationInfo generationInfo;
     protected static Random random;
@@ -61,8 +61,12 @@ namespace Dungeons
     List<Door> doors = new List<Door>();
 
     [XmlIgnore]
-    [JsonIgnore]
-    public Tile[,] Tiles { get { return tiles; } }
+    //[JsonIgnore]
+    public Tile[,] Tiles
+    {
+      get { return tiles; }
+      set { tiles = value; }
+    }
     public int Width { get { return tiles.GetLength(1); } }
     public int Height { get { return tiles.GetLength(0); } }
     [XmlIgnore]

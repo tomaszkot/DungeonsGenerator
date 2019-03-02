@@ -46,11 +46,20 @@ namespace DungeonsConsoleRunner
     {
       Dungeon = generator.Generate();
       DungeonPresenter = new DungeonPresenter(Presenter, OriginX + DungeonX, OriginY + DungeonY);
+
       usagePresenter = new ListPresenter("Usage", OriginX, OriginY, 30);
 
-      usagePresenter.Lines.Add(new ListItem("R - reload"));
-      usagePresenter.Lines.Add(new ListItem("D - toggle node_indexes/symbols"));
-      usagePresenter.Lines.Add(new ListItem("Esc - exit"));
+      usagePresenter.Lines = CreateUsageList();
+    }
+
+    protected virtual List<ListItem> CreateUsageList()
+    {
+      var list = new List<ListItem>();
+      list.Add(new ListItem("R - reload"));
+      list.Add(new ListItem("D - toggle node_indexes/symbols"));
+      list.Add(new ListItem("Esc - exit"));
+
+      return list;
     }
 
     protected virtual bool HandleKey(ConsoleKeyInfo key)
