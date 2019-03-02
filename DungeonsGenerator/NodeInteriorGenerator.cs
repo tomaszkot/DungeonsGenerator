@@ -113,10 +113,10 @@ namespace Dungeons
       for (int i = 0; i < generationInfo.EntrancesCount; i++)
       {
         var entr = GenerateEntranceAtRandomSide(generated.ToArray());
-        if (entr.Second != null)
+        if (entr.Item2 != null)
         {
-          generated.Add(entr.First);
-          dn.CreateDoor(entr.Second);
+          generated.Add(entr.Item1);
+          dn.CreateDoor(entr.Item2);
         }
       }
     }
@@ -301,7 +301,6 @@ namespace Dungeons
       if (generationInfo.GenerateRandomStonesBlocks)
       {
         int maxDec = (Width + Height) / 4;
-        //int numDec = generationInfo.DecorationsCount != null ? generationInfo.DecorationsCount.Value : random.Next(3, maxDec > 3 ? maxDec : 3);
         int numDec = RandHelper.Random.Next(3, maxDec > 3 ? maxDec : 3);
         for (int i = 0; i < numDec; i++)
           AddFinishingDecorations();

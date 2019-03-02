@@ -9,7 +9,6 @@ namespace Dungeons
   public interface IGameGenerator
   {
     DungeonNode Generate();
-    //DungeonNode Level { get; }
   }
 
   public class Generator : IGameGenerator
@@ -22,12 +21,6 @@ namespace Dungeons
     {
       random = new Random();
     }
-
-    //public DungeonNode Level
-    //{
-    //  get;
-    //  protected set;
-    //}
 
     public virtual DungeonNode Generate()
     {
@@ -115,7 +108,6 @@ namespace Dungeons
       var mazeNodes = CreateDungeonNodes();
       var layouter = new DefaultNodeLayouter();
       T level = layouter.DoLayout<T>(mazeNodes);
-      //Level = level;
       return level;
     }
 

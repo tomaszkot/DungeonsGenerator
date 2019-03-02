@@ -48,12 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ASCIIPresenters\ConsoleDrawingEngine.cs" />
-    <Compile Include="ASCIIPresenters\NodePresenter.cs" />
+    <Compile Include="ASCIIPresenters\DungeonPresenter.cs" />
     <Compile Include="ASCIIPresenters\ListPresenter.cs" />
     <Compile Include="Core\GenerationConstraints.cs" />
     <Compile Include="Core\GenericEventArgs.cs" />
     <Compile Include="Core\RandHelper.cs" />
-    <Compile Include="Core\Tuple.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="DefaultNodeLayouter.cs" />
     <Compile Include="GenerationInfo.cs" />

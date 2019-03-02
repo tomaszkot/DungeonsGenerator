@@ -30,12 +30,11 @@ namespace Dungeons.ASCIIPresenters
 
   public class ListPresenter : Item
   {
-    List<ListItem> lines;
     string caption;
     char border = '-';
     int borderSize = 20;
 
-    public List<ListItem> Lines { get => lines; set => lines = value; }
+    public List<ListItem> Lines { get ; set ; } = new List<ListItem>();
 
     public ListPresenter(string caption, int x, int y) : base(x, y)
     {

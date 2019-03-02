@@ -9,14 +9,14 @@ using System.Text;
 
 namespace Dungeons.ASCIIPresenters
 {
-  public class NodePresenter// : INodePrinter
+  public class DungeonPresenter// : INodePrinter
   {
     DungeonNode node;
     int top;
     int left;
     IDrawingEngine presenter;
 
-    public NodePresenter(DungeonNode node, IDrawingEngine presenter, int left = -1, int top = -1)
+    public DungeonPresenter(DungeonNode node, IDrawingEngine presenter, int left = -1, int top = -1)
     {
       this.presenter = presenter;
       this.node = node;
@@ -68,7 +68,7 @@ namespace Dungeons.ASCIIPresenters
       return top >= 0 && left >= 0;
     }
 
-    public virtual void Print(PrintInfo pi)
+    public virtual void Redraw(PrintInfo pi)
     {
       if (pi == null)
         pi = new PrintInfo();

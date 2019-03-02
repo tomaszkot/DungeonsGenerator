@@ -12,12 +12,11 @@ namespace DungeonsConsoleRunner
   {
     IGameGenerator generator = new Generator();
     PrintInfo printInfo = new PrintInfo();
-    NodePresenter nodePrinter;
     int dungeonX;
     int dungeonY;
 
     public virtual DungeonNode Dungeon { get; set; }
-    public NodePresenter NodePrinter { get => nodePrinter; set => nodePrinter = value; }
+    public DungeonPresenter DungeonPresenter { get; set; }
     public int DungeonX { get => dungeonX; set => dungeonX = value; }
     public int DungeonY { get => dungeonY; set => dungeonY = value; }
     public IDrawingEngine Presenter { get; set; } = new ConsoleDrawingEngine();
@@ -65,7 +64,7 @@ namespace DungeonsConsoleRunner
     protected void Reload()
     {
       Dungeon = generator.Generate();
-      NodePrinter = new NodePresenter(Dungeon, Presenter, DungeonX, DungeonY = 10);
+      DungeonPresenter = new DungeonPresenter(Dungeon, Presenter, DungeonX, DungeonY = 10);
       Redraw();
     }
 
@@ -76,7 +75,7 @@ namespace DungeonsConsoleRunner
       if (Dungeon != null)
       {
         PrintDungeonDesc();
-        NodePrinter.Print(printInfo);
+        DungeonPresenter.Redraw(printInfo);
       }
     }
 

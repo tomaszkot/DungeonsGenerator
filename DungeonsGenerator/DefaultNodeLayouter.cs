@@ -14,6 +14,7 @@ namespace Dungeons
     public EntranceSide? nextForcedSide;
   }
 
+  //Takes list of nodes and arranges them into a dungeon. Nodes are aligning one to another no special corridors.
   class DefaultNodeLayouter
   {
     public T DoLayout<T>(List<DungeonNode> nodes) where T : DungeonNode, new()
@@ -28,8 +29,8 @@ namespace Dungeons
 
       var max = localLevel.GetMaxXY();
       //generics sucks in C#
-      var Level = System.Activator.CreateInstance(typeof(T), max.First + 1, max.Second + 1) as T;
-      Level.AppendMaze(localLevel, new Point(0, 0), new Point(max.First + 1, max.Second + 1));
+      var Level = System.Activator.CreateInstance(typeof(T), max.Item1 + 1, max.Item2 + 1) as T;
+      Level.AppendMaze(localLevel, new Point(0, 0), new Point(max.Item1 + 1, max.Item2 + 1));
       Level.DeleteWrongDoors();
 
       return Level;
