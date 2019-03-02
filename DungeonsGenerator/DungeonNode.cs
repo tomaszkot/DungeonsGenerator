@@ -262,7 +262,7 @@ namespace Dungeons
       foreach (var tile in Tiles)
       {
         if (tile != null)
-          tile.dungeonNodeIndex = NodeIndex;
+          tile.DungeonNodeIndex = NodeIndex;
       }
     }
 
@@ -346,15 +346,15 @@ namespace Dungeons
       if (tiles[point.Y, point.X] != null)
       {
         var prev = tiles[point.Y, point.X];
-        if (tile != null && tile.dungeonNodeIndex < 0)
-          tile.dungeonNodeIndex = prev.dungeonNodeIndex;
+        if (tile != null && tile.DungeonNodeIndex < 0)
+          tile.DungeonNodeIndex = prev.DungeonNodeIndex;
       }
 
       tiles[point.Y, point.X] = tile;
 
       if (tile != null)
       {
-        if (tile.dungeonNodeIndex > DungeonNode.ChildIslandNodeIndex)//do not touch islands
+        if (tile.DungeonNodeIndex > DungeonNode.ChildIslandNodeIndex)//do not touch islands
           SetDungeonNodeIndex(tile);
         if (resetOldTile)
         {
@@ -363,7 +363,7 @@ namespace Dungeons
           {
             var emp = GenerateEmptyTile();
             if(emp != null)
-              emp.dungeonNodeIndex = tile.dungeonNodeIndex;//preserve;
+              emp.DungeonNodeIndex = tile.DungeonNodeIndex;//preserve;
             SetTile(emp, tile.Point);
             if (emp != null)
             {
@@ -386,7 +386,7 @@ namespace Dungeons
     
     protected virtual void SetDungeonNodeIndex(Tile tile)
     {
-      tile.dungeonNodeIndex = this.NodeIndex;
+      tile.DungeonNodeIndex = this.NodeIndex;
     }
     
     Point GetInteriorStartingPoint(int minSizeReduce = 6, DungeonNode child = null)
@@ -405,7 +405,7 @@ namespace Dungeons
       var door = CreateDoorInstance();
       bool doorSet = SetTile(door, original.Point);
       Debug.Assert(doorSet);
-      door.dungeonNodeIndex = original.dungeonNodeIndex;
+      door.DungeonNodeIndex = original.DungeonNodeIndex;
       Doors.Add(door);
       return door;
     }
@@ -469,7 +469,7 @@ namespace Dungeons
           tileInChildMaze.Point = new Point(destCol, destRow);
 
           if (childIsland)
-            tileInChildMaze.dungeonNodeIndex = childMaze.NodeIndex;
+            tileInChildMaze.DungeonNodeIndex = childMaze.NodeIndex;
 
           this.tiles[destRow, destCol] = tileInChildMaze;
         }
@@ -600,7 +600,7 @@ namespace Dungeons
     public virtual Tile GenerateEmptyTile(Point pt)
     {
       var tile = new Tile(pt, Constants.SymbolBackground);
-      tile.dungeonNodeIndex = NodeIndex;
+      tile.DungeonNodeIndex = NodeIndex;
       return tile;
     }
 

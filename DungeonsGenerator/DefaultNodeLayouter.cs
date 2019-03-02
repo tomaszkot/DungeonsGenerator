@@ -22,7 +22,7 @@ namespace Dungeons
       //totals sizes
       var tw = nodes.Sum(i => i.Width);
       var th = nodes.Sum(i => i.Height);
-      var localLevel = new DungeonNode(tw, th, null);
+      var localLevel = new DungeonNode(tw, th, null, 0);
       var maxLoc = localLevel.GetMaxXY();
 
       LayoutNodes(localLevel, nodes);

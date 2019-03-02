@@ -29,7 +29,7 @@ namespace Dungeons.Tiles
     /// <summary>
     /// The index of the node (room) the tile belongs to
     /// </summary>
-    public int dungeonNodeIndex = Constants.MinNormalNodeIndex - 1;
+    //public int DungeonNodeIndex = Constants.MinNormalNodeIndex - 1;
 
     /// <summary>
     /// If the tile is at node's corner this member says which corner it is.
@@ -57,6 +57,20 @@ namespace Dungeons.Tiles
       this.Point = point;
       this.Symbol = symbol;
       this.revealed = true;
+    }
+
+    public int dungeonNodeIndex;
+    public int DungeonNodeIndex
+    {
+      get { return dungeonNodeIndex; }
+      set {
+        if (value == 100 && Symbol == '@')
+        {
+          int k = 0;
+          k++;
+        }
+        dungeonNodeIndex = value;
+      }
     }
 
     public bool Revealed
@@ -105,7 +119,7 @@ namespace Dungeons.Tiles
 
     public bool IsFromChildIsland
     {
-      get { return dungeonNodeIndex < Constants.MinNormalNodeIndex; }
+      get { return DungeonNodeIndex < Constants.MinNormalNodeIndex; }
     }
 
     public float RevealPercent { get; set; }
@@ -132,7 +146,7 @@ namespace Dungeons.Tiles
 
     public override string ToString()
     {
-      return Symbol + " " + dungeonNodeIndex + " [" + Point.X + "," + Point.Y + "]" + " " + GetHashCode();
+      return Symbol + " " + DungeonNodeIndex + " [" + Point.X + "," + Point.Y + "]" + " " + GetHashCode();
     }
 
     public double DistanceFrom(Tile other)

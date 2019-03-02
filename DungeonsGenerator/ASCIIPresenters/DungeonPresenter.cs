@@ -40,7 +40,7 @@ namespace Dungeons.ASCIIPresenters
         if (pi.PrintNodeIndexes)
         {
           presenter.ForegroundColor = color;
-          presenter.Write(tile.dungeonNodeIndex);
+          presenter.Write(tile.DungeonNodeIndex);
           return;
         }
         if (tile.Revealed)
