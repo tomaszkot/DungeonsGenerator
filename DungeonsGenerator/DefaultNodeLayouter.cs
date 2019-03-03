@@ -12,6 +12,14 @@ namespace Dungeons
     public int nextY;
     public EntranceSide side;
     public EntranceSide? nextForcedSide;
+
+    AppendNodeInfo(EntranceSide? nextForcedSide = null)
+    {
+      nextX = 0;
+      nextY = 0;
+      side = EntranceSide.Left;
+      this.nextForcedSide = nextForcedSide;
+    }
   }
 
   //Takes list of nodes and arranges them into a dungeon. Nodes are aligning one to another no special corridors.

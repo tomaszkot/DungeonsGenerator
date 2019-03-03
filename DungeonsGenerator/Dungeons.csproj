@@ -50,6 +50,7 @@
     <Compile Include="ASCIIPresenters\ConsoleDrawingEngine.cs" />
     <Compile Include="ASCIIPresenters\DungeonPresenter.cs" />
     <Compile Include="ASCIIPresenters\ListPresenter.cs" />
+    <Compile Include="ASCIIPresenters\Screen.cs" />
     <Compile Include="Core\GenerationConstraints.cs" />
     <Compile Include="Core\GenericEventArgs.cs" />
     <Compile Include="Core\RandHelper.cs" />

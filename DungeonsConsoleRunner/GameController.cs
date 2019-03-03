@@ -12,27 +12,26 @@ namespace DungeonsConsoleRunner
   public class GameController
   {
     IGameGenerator generator = new Generator();
-    PrintInfo printInfo = new PrintInfo();
-    public int OriginX = 2;
-    public int OriginY = 2;
-
-    ListPresenter usagePresenter;
 
     public virtual DungeonNode Dungeon { get; set; }
-    public DungeonPresenter DungeonPresenter { get; set; }
-    public int DungeonX { get ; set ; }
-    public int DungeonY { get; set; } = 10;
     public IDrawingEngine Presenter { get; set; } = new ConsoleDrawingEngine();
+    protected Screen screen;
 
     public GameController(IGameGenerator generator)
     {
       this.generator = generator;
     }
 
+    protected virtual Screen CreateScreen()
+    {
+      return new Screen(Presenter);
+    }
+
     public void Run()
     {
       ConsoleSetup.Init();
       Generate();
+      Redraw();
 
       bool exit = false;
       while (!exit)
@@ -45,21 +44,7 @@ namespace DungeonsConsoleRunner
     protected virtual void Generate()
     {
       Dungeon = generator.Generate();
-      DungeonPresenter = new DungeonPresenter(Presenter, OriginX + DungeonX, OriginY + DungeonY);
-
-      usagePresenter = new ListPresenter("Usage", OriginX, OriginY, 30);
-
-      usagePresenter.Lines = CreateUsageList();
-    }
-
-    protected virtual List<ListItem> CreateUsageList()
-    {
-      var list = new List<ListItem>();
-      list.Add(new ListItem("R - reload"));
-      list.Add(new ListItem("D - toggle node_indexes/symbols"));
-      list.Add(new ListItem("Esc - exit"));
-
-      return list;
+      
     }
 
     protected virtual bool HandleKey(ConsoleKeyInfo key)
@@ -72,7 +57,7 @@ namespace DungeonsConsoleRunner
         Reload();
       if (input == ConsoleKey.D)
       {
-        printInfo.PrintNodeIndexes = !printInfo.PrintNodeIndexes;
+        screen.PrintInfo.PrintNodeIndexes = !screen.PrintInfo.PrintNodeIndexes;
         Redraw();
       }
 
@@ -87,22 +72,11 @@ namespace DungeonsConsoleRunner
 
     protected virtual void Redraw()
     {
-      Console.Clear();
-      usagePresenter.Redraw(Presenter);
-      if (Dungeon != null)
+      if (screen == null)
       {
-        PrintDungeonDesc();
-        DungeonPresenter.Redraw(Dungeon, printInfo);
+        screen = CreateScreen();
       }
+      screen.Redraw(Dungeon);
     }
-
-    private void PrintDungeonDesc()
-    {
-      //Presenter.WriteLine("");
-      Presenter.SetCursorPosition(OriginX, Presenter.GetCursorPosition().Item2);
-      Presenter.WriteLine(Dungeon.Description);
-      Presenter.WriteLine("");
-    }
-
   }
 }

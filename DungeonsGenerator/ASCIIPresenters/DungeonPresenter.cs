@@ -9,15 +9,13 @@ using System.Text;
 
 namespace Dungeons.ASCIIPresenters
 {
-  public class DungeonPresenter// : INodePrinter
+  public class DungeonPresenter
   {
-    DungeonNode node;
-    int top;
-    int left;
+    readonly int top;
+    readonly int left;
     IDrawingEngine presenter;
-    //public DungeonNode Node { get => node; set => node = value; }
 
-    public DungeonPresenter(IDrawingEngine presenter, int left = -1, int top = -1)
+    public DungeonPresenter(IDrawingEngine presenter, int left = 0, int top = 0)
     {
       this.presenter = presenter;
       this.top = top;
@@ -57,37 +55,23 @@ namespace Dungeons.ASCIIPresenters
     {
       if (pi == null)
         pi = new PrintInfo();
-      Debug.Assert(PositionBasedPrinting());
       presenter.SetCursorPosition(left + x, top + y);
       var tile = Node.GetTile(new Point(x, y));
       Print(tile, pi);
-    }
-
-    private bool PositionBasedPrinting()
-    {
-      return top >= 0 && left >= 0;
     }
 
     public virtual void Redraw(DungeonNode node, PrintInfo pi)
     {
       if (pi == null)
         pi = new PrintInfo();
-
-
-      if (PositionBasedPrinting())
-        presenter.SetCursorPosition(left, top);
+      
+      presenter.SetCursorPosition(left, top);
       for (int row = 0; row < node.Height; row++)
       {
         PrintNewLine();
-        if (PositionBasedPrinting())
-          presenter.SetCursorPosition(left, top+row);
+        presenter.SetCursorPosition(left, top+row);
         for (int col = 0; col < node.Width; col++)
         {
-          if (col == 2 && row == 1)
-          {
-            int kk = 0;
-          }
-
           var tile = node.GetTile(new Point(col, row));
           if (tile != null && tile.Symbol == '@')
           {

@@ -47,31 +47,72 @@ namespace Dungeons.ASCIIPresenters
     }
   }
 
-  public class ListItem
+  public class Label : Item
   {
     public ConsoleColor Color = ConsoleColor.White;
     public string Text;
 
-    public ListItem() { }
-    public ListItem(string txt)
+    public Label(int x, int y) : base(x, y) { }
+    public Label(int x, int y, string txt) : this(x, y)
+    {
+      Text = txt;
+    }
+
+    public virtual void Redraw(IDrawingEngine presenter)
+    {
+      WriteLine(Text);
+    }
+  }
+
+  public class LabelContent 
+  {
+    public ConsoleColor Color = ConsoleColor.White;
+    public string Text;
+
+    public LabelContent() { }
+    public LabelContent(string txt)
     {
       Text = txt;
     }
   }
 
+  public class ListItem : LabelContent
+  {
+    public ListItem()
+    {
+    }
 
+    public ListItem(string txt)
+    {
+      Text = txt;
+    }
+  }
+  
   public class ListPresenter : Item
   {
     string caption;
     char border = '-';
     int width = 25;
 
-    public List<ListItem> Lines { get ; set ; } = new List<ListItem>();
+    public List<ListItem> Items { get ; set ; } = new List<ListItem>();
+    public string Caption { get => caption; set => caption = value; }
 
     public ListPresenter(string caption, int x, int y, int width) : base(x, y)
     {
-      this.caption = caption;
+      this.Caption = caption;
       this.width = width;
+    }
+
+    public int TotalHeight
+    {
+      get
+      {
+        return Items.Count +
+               2 + //2 - borders over caption, 
+               1 + //1 - caption,
+               1 ; //1 - bottom border
+      }
+
     }
 
     public virtual void Redraw(IDrawingEngine presenter)
@@ -81,10 +122,10 @@ namespace Dungeons.ASCIIPresenters
       //presenter.SetCursorPosition(OriginPositionX, OriginPositionY);
       DrawBorder(presenter);
       presenter.ForegroundColor = ConsoleColor.Cyan;
-      WriteLine(caption);
+      WriteLine(Caption);
       DrawBorder(presenter);
 
-      foreach (var line in Lines)
+      foreach (var line in Items)
       {
         presenter.ForegroundColor = line.Color;
         WriteLine(line.Text);
