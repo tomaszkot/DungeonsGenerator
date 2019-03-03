@@ -22,15 +22,15 @@ namespace Dungeons.ASCIIPresenters
     public List<Item> ASCIIItems = new List<Item>();
 
     Dictionary<string, ListPresenter> lists;
-    protected IDrawingEngine Presenter;
+    protected IDrawingEngine DrawingEngine;
     public DungeonNode Dungeon;
 
-    public Screen(IDrawingEngine Presenter, int originX = 0, int originY = 0, int dungeonY = 0)
+    public Screen(IDrawingEngine drawingEngine, int originX = 0, int originY = 0, int dungeonY = 0)
     {
       OriginX = originX;
       OriginY = originY;
       DungeonY = dungeonY;
-      this.Presenter = Presenter;
+      this.DrawingEngine = drawingEngine;
       
     }
 
@@ -78,10 +78,10 @@ namespace Dungeons.ASCIIPresenters
      
       Console.Clear();
       RedrawLists();
-      ASCIIItems.ForEach(i => i.Redraw(Presenter));
+      ASCIIItems.ForEach(i => i.Redraw(DrawingEngine));
 
       if (DungeonPresenter == null)
-        DungeonPresenter = new DungeonPresenter(Presenter, OriginX + DungeonX, OriginY + DungeonY);
+        DungeonPresenter = new DungeonPresenter(DrawingEngine, OriginX + DungeonX, OriginY + DungeonY);
 
       DungeonPresenter.Redraw(Dungeon, PrintInfo);
     }
@@ -91,7 +91,7 @@ namespace Dungeons.ASCIIPresenters
       foreach (var list in Lists)
       {
         UpdateList(list.Value);
-        list.Value.Redraw(Presenter);
+        list.Value.Redraw(DrawingEngine);
       }
     }
 

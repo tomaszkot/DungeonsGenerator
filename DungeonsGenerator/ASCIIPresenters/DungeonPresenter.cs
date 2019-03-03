@@ -13,19 +13,19 @@ namespace Dungeons.ASCIIPresenters
   {
     readonly int top;
     readonly int left;
-    IDrawingEngine presenter;
+    IDrawingEngine drawingEngine;
 
-    public DungeonPresenter(IDrawingEngine presenter, int left = 0, int top = 0)
+    public DungeonPresenter(IDrawingEngine drawingEngine, int left = 0, int top = 0)
     {
-      this.presenter = presenter;
+      this.drawingEngine = drawingEngine;
       this.top = top;
       this.left = left;
-      presenter.CursorVisible = false;
+      drawingEngine.CursorVisible = false;
     }
 
     public void PrintNewLine()
     {
-      presenter.Write(Environment.NewLine);
+      drawingEngine.Write(Environment.NewLine);
     }
 
     public void Print(Tile tile, PrintInfo pi)
@@ -37,8 +37,8 @@ namespace Dungeons.ASCIIPresenters
         color = tile.Color;
         if (pi.PrintNodeIndexes)
         {
-          presenter.ForegroundColor = color;
-          presenter.Write(tile.DungeonNodeIndex);
+          drawingEngine.ForegroundColor = color;
+          drawingEngine.Write(tile.DungeonNodeIndex);
           return;
         }
         if (tile.Revealed)
@@ -47,15 +47,15 @@ namespace Dungeons.ASCIIPresenters
 
         }
       }
-      presenter.ForegroundColor = color;
-      presenter.Write(symbol);
+      drawingEngine.ForegroundColor = color;
+      drawingEngine.Write(symbol);
     }
 
     public virtual void RefreshPosition(DungeonNode Node, PrintInfo pi, int x, int y)
     {
       if (pi == null)
         pi = new PrintInfo();
-      presenter.SetCursorPosition(left + x, top + y);
+      drawingEngine.SetCursorPosition(left + x, top + y);
       var tile = Node.GetTile(new Point(x, y));
       Print(tile, pi);
     }
@@ -65,11 +65,11 @@ namespace Dungeons.ASCIIPresenters
       if (pi == null)
         pi = new PrintInfo();
       
-      presenter.SetCursorPosition(left, top);
+      drawingEngine.SetCursorPosition(left, top);
       for (int row = 0; row < node.Height; row++)
       {
         PrintNewLine();
-        presenter.SetCursorPosition(left, top+row);
+        drawingEngine.SetCursorPosition(left, top+row);
         for (int col = 0; col < node.Width; col++)
         {
           var tile = node.GetTile(new Point(col, row));

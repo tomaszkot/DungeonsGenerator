@@ -8,7 +8,7 @@ namespace Dungeons.ASCIIPresenters
 {
   public abstract class Item
   {
-    IDrawingEngine presenter;
+    IDrawingEngine drawingEngine;
     public int CurrentX { get; set; }
     public int CurrentY { get; set; }
 
@@ -22,7 +22,7 @@ namespace Dungeons.ASCIIPresenters
 
     public int OriginPositionX { get; set; }
     public int OriginPositionY { get; set; }
-    public IDrawingEngine Presenter { get => presenter; set => presenter = value; }
+    public IDrawingEngine DrawingEngine { get => drawingEngine; set => drawingEngine = value; }
 
     protected void Reset()
     {
@@ -35,7 +35,7 @@ namespace Dungeons.ASCIIPresenters
     {
       UpdatePresenterPos();
       var debug = "";// " (at " + CurrentX + ", " + CurrentY;
-      Presenter.WriteLine(line + " " + debug);
+      DrawingEngine.WriteLine(line + " " + debug);
       CurrentX = OriginPositionX;
       CurrentY++;
       UpdatePresenterPos();
@@ -43,10 +43,10 @@ namespace Dungeons.ASCIIPresenters
 
     private void UpdatePresenterPos()
     {
-      Presenter.SetCursorPosition(CurrentX, CurrentY);
+      DrawingEngine.SetCursorPosition(CurrentX, CurrentY);
     }
 
-    public abstract void Redraw(IDrawingEngine presenter);
+    public abstract void Redraw(IDrawingEngine drawingEngine);
 
     public abstract int TotalHeight
     {
@@ -67,9 +67,9 @@ namespace Dungeons.ASCIIPresenters
 
     public override int TotalHeight => 1;
 
-    public override void Redraw(IDrawingEngine presenter)
+    public override void Redraw(IDrawingEngine drawingEngine)
     {
-      this.Presenter = presenter;
+      this.DrawingEngine = drawingEngine;
       WriteLine(Text);
     }
   }
@@ -125,30 +125,29 @@ namespace Dungeons.ASCIIPresenters
 
     }
 
-    public override void Redraw(IDrawingEngine presenter)
+    public override void Redraw(IDrawingEngine drawingEngine)
     {
-      Presenter = presenter;
+      DrawingEngine = drawingEngine;
       Reset();
-      //presenter.SetCursorPosition(OriginPositionX, OriginPositionY);
-      DrawBorder(presenter);
-      presenter.ForegroundColor = ConsoleColor.Cyan;
+      DrawBorder(drawingEngine);
+      drawingEngine.ForegroundColor = ConsoleColor.Cyan;
       WriteLine(Caption);
-      DrawBorder(presenter);
+      DrawBorder(drawingEngine);
 
       foreach (var line in Items)
       {
-        presenter.ForegroundColor = line.Color;
+        drawingEngine.ForegroundColor = line.Color;
         WriteLine(line.Text);
       }
 
-      DrawBorder(presenter);
+      DrawBorder(drawingEngine);
 
       //WriteLine("-");
     }
 
-    private void DrawBorder(IDrawingEngine presenter)
+    private void DrawBorder(IDrawingEngine drawingEngine)
     {
-      presenter.ForegroundColor = ConsoleColor.White;
+      drawingEngine.ForegroundColor = ConsoleColor.White;
       var line = "";
       for (int i = 0; i < width; i++)
         line += border;
