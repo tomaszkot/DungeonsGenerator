@@ -27,11 +27,8 @@ namespace Dungeons.ASCIIDisplay
     public DungeonNode Dungeon;
     public bool UpdateUI { get; set; } = true;
 
-    public Screen(IDrawingEngine drawingEngine, int originX = 0, int originY = 0)//, int dungeonY = 0)
+    public Screen(IDrawingEngine drawingEngine)
     {
-      OriginX = originX;
-      OriginY = originY;
-      //DungeonY = dungeonY;
       this.DrawingEngine = drawingEngine;
       
     }
@@ -90,7 +87,7 @@ namespace Dungeons.ASCIIDisplay
         CreateUI();
       }
 
-      //DrawingEngine.Clear();
+      DrawingEngine.Clear();
       if (UpdateUI)
       {
         RedrawLists();

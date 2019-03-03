@@ -30,7 +30,9 @@ namespace Dungeons.ASCIIDisplay.Presenters
 
     public override void Redraw(IDrawingEngine drawingEngine)
     {
+      
       this.DrawingEngine = drawingEngine;
+      base.Reset();
       WriteLine(Text);
     }
   }

@@ -1,5 +1,6 @@
 ﻿using Dungeons;
 using Dungeons.ASCIIDisplay;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,20 +12,23 @@ namespace DungeonsConsoleRunner
 {
   public class GameController
   {
-    IGameGenerator generator = new Generator();
+    IGameGenerator generator;
 
     public virtual DungeonNode Dungeon { get; set; }
-    public IDrawingEngine DrawingEngine { get; set; } = new ConsoleDrawingEngine();
+    public IDrawingEngine DrawingEngine { get; set; }
     protected Screen screen;
+    Container container;
 
-    public GameController(IGameGenerator generator)
+    public GameController(Container container, IGameGenerator generator, IDrawingEngine drawingEngine)
     {
+      this.container = container;
       this.generator = generator;
+      this.DrawingEngine = drawingEngine;
     }
 
     protected virtual Screen CreateScreen()
     {
-      return new Screen(DrawingEngine);
+      return container.GetInstance<Screen>();
     }
 
     public void Run()
