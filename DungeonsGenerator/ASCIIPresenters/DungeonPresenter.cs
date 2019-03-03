@@ -23,11 +23,6 @@ namespace Dungeons.ASCIIPresenters
       drawingEngine.CursorVisible = false;
     }
 
-    public void PrintNewLine()
-    {
-      drawingEngine.Write(Environment.NewLine);
-    }
-
     public void Print(Tile tile, PrintInfo pi)
     {
       var color = ConsoleColor.White;
@@ -68,7 +63,6 @@ namespace Dungeons.ASCIIPresenters
       drawingEngine.SetCursorPosition(left, top);
       for (int row = 0; row < node.Height; row++)
       {
-        PrintNewLine();
         drawingEngine.SetCursorPosition(left, top+row);
         for (int col = 0; col < node.Width; col++)
         {

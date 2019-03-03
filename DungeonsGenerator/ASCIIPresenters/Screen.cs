@@ -25,11 +25,11 @@ namespace Dungeons.ASCIIPresenters
     protected IDrawingEngine DrawingEngine;
     public DungeonNode Dungeon;
 
-    public Screen(IDrawingEngine drawingEngine, int originX = 0, int originY = 0, int dungeonY = 0)
+    public Screen(IDrawingEngine drawingEngine, int originX = 0, int originY = 0)//, int dungeonY = 0)
     {
       OriginX = originX;
       OriginY = originY;
-      DungeonY = dungeonY;
+      //DungeonY = dungeonY;
       this.DrawingEngine = drawingEngine;
       
     }
@@ -63,17 +63,29 @@ namespace Dungeons.ASCIIPresenters
       usage.Items = list;
       Lists[UsageListName] = usage;
 
-      ASCIIItems.Add(new Label(OriginX, usage.TotalHeight, Dungeon.Description));
+      
+    }
+
+    public virtual void CreateUI()
+    {
+      CreateLists();
+      DungeonY = Lists[UsageListName].TotalHeight;// 1 - Dungeon.Description, 2 - spacing
+
+      var lbl = new Label(OriginX, OriginY + Lists[UsageListName].TotalHeight, Dungeon.Description);
+      ASCIIItems.Add(lbl);
+
+      DungeonY += lbl.TotalHeight;
+      DungeonY += 2;
+
     }
 
     public virtual void Redraw(DungeonNode dungeon)
     {
       Dungeon = dungeon;
 
-      if (Lists == null)
+      if (!ASCIIItems.Any())
       {
-        CreateLists();
-        OriginY = Lists[UsageListName].TotalHeight +  1 + 2;// 1 - Dungeon.Description, 2 - spacing
+        CreateUI();
       }
      
       Console.Clear();
@@ -81,7 +93,10 @@ namespace Dungeons.ASCIIPresenters
       ASCIIItems.ForEach(i => i.Redraw(DrawingEngine));
 
       if (DungeonPresenter == null)
+      {
+
         DungeonPresenter = new DungeonPresenter(DrawingEngine, OriginX + DungeonX, OriginY + DungeonY);
+      }
 
       DungeonPresenter.Redraw(Dungeon, PrintInfo);
     }

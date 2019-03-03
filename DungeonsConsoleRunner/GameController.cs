@@ -14,7 +14,7 @@ namespace DungeonsConsoleRunner
     IGameGenerator generator = new Generator();
 
     public virtual DungeonNode Dungeon { get; set; }
-    public IDrawingEngine Presenter { get; set; } = new ConsoleDrawingEngine();
+    public IDrawingEngine DrawingEngine { get; set; } = new ConsoleDrawingEngine();
     protected Screen screen;
 
     public GameController(IGameGenerator generator)
@@ -24,7 +24,7 @@ namespace DungeonsConsoleRunner
 
     protected virtual Screen CreateScreen()
     {
-      return new Screen(Presenter);
+      return new Screen(DrawingEngine);
     }
 
     public void Run()
