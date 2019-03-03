@@ -19,6 +19,7 @@ namespace Dungeons.ASCIIPresenters
     public DungeonPresenter DungeonPresenter { get; set; }
     public PrintInfo PrintInfo { get => printInfo; set => printInfo = value; }
     public Dictionary<string, ListPresenter> Lists { get => lists; set => lists = value; }
+    public List<Item> ASCIIItems = new List<Item>();
 
     Dictionary<string, ListPresenter> lists;
     protected IDrawingEngine Presenter;
@@ -54,12 +55,15 @@ namespace Dungeons.ASCIIPresenters
     protected virtual void CreateLists()
     {
       Lists = new Dictionary<string, ListPresenter>();
-      Lists[UsageListName] = new ListPresenter(UsageListName, OriginX, OriginY, 30);
+      var usage = new ListPresenter(UsageListName, OriginX, OriginY, 30);
       var list = new List<ListItem>();
       list.Add(new ListItem("R - reload"));
       list.Add(new ListItem("D - toggle node_indexes/symbols"));
       list.Add(new ListItem("Esc - exit"));
-      Lists[UsageListName].Items = list;
+      usage.Items = list;
+      Lists[UsageListName] = usage;
+
+      ASCIIItems.Add(new Label(OriginX, usage.TotalHeight, Dungeon.Description));
     }
 
     public virtual void Redraw(DungeonNode dungeon)
@@ -74,12 +78,11 @@ namespace Dungeons.ASCIIPresenters
      
       Console.Clear();
       RedrawLists();
-      
-      PrintDungeonDesc(Dungeon);
+      ASCIIItems.ForEach(i => i.Redraw(Presenter));
+
       if (DungeonPresenter == null)
-      {
         DungeonPresenter = new DungeonPresenter(Presenter, OriginX + DungeonX, OriginY + DungeonY);
-      }
+
       DungeonPresenter.Redraw(Dungeon, PrintInfo);
     }
 
@@ -94,13 +97,6 @@ namespace Dungeons.ASCIIPresenters
 
     public virtual void UpdateList(ListPresenter list)
     {
-    }
-
-    public void PrintDungeonDesc(DungeonNode Dungeon)
-    {
-      Presenter.SetCursorPosition(OriginX, Presenter.GetCursorPosition().Item2);
-      Presenter.WriteLine(Dungeon.Description);
-      Presenter.WriteLine("");
     }
   }
 }

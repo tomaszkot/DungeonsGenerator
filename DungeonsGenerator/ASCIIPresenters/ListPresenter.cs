@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dungeons.ASCIIPresenters
 {
-  public class Item
+  public abstract class Item
   {
     IDrawingEngine presenter;
     public int CurrentX { get; set; }
@@ -45,6 +45,13 @@ namespace Dungeons.ASCIIPresenters
     {
       Presenter.SetCursorPosition(CurrentX, CurrentY);
     }
+
+    public abstract void Redraw(IDrawingEngine presenter);
+
+    public abstract int TotalHeight
+    {
+      get;
+    }
   }
 
   public class Label : Item
@@ -58,8 +65,11 @@ namespace Dungeons.ASCIIPresenters
       Text = txt;
     }
 
-    public virtual void Redraw(IDrawingEngine presenter)
+    public override int TotalHeight => 1;
+
+    public override void Redraw(IDrawingEngine presenter)
     {
+      this.Presenter = presenter;
       WriteLine(Text);
     }
   }
@@ -103,7 +113,7 @@ namespace Dungeons.ASCIIPresenters
       this.width = width;
     }
 
-    public int TotalHeight
+    public override int TotalHeight
     {
       get
       {
@@ -115,7 +125,7 @@ namespace Dungeons.ASCIIPresenters
 
     }
 
-    public virtual void Redraw(IDrawingEngine presenter)
+    public override void Redraw(IDrawingEngine presenter)
     {
       Presenter = presenter;
       Reset();
