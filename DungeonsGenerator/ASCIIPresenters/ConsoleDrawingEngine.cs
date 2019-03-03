@@ -7,6 +7,8 @@ namespace Dungeons.ASCIIPresenters
     public bool CursorVisible { set { Console.CursorVisible = value; } }
     public ConsoleColor ForegroundColor { get => Console.ForegroundColor; set => Console.ForegroundColor = value; }
 
+    public int WindowWidth => Console.WindowWidth;
+
     public void SetCursorPosition(int x, int y)
     {
       Console.SetCursorPosition(x, y);
@@ -35,6 +37,11 @@ namespace Dungeons.ASCIIPresenters
     public void WriteLine(string line)
     {
       Console.WriteLine(line);
+    }
+
+    public void Clear()
+    {
+      Console.Clear();
     }
   }
 }

@@ -87,14 +87,13 @@ namespace Dungeons.ASCIIPresenters
       {
         CreateUI();
       }
-     
-      Console.Clear();
+
+      DrawingEngine.Clear();
       RedrawLists();
       ASCIIItems.ForEach(i => i.Redraw(DrawingEngine));
 
       if (DungeonPresenter == null)
       {
-
         DungeonPresenter = new DungeonPresenter(DrawingEngine, OriginX + DungeonX, OriginY + DungeonY);
       }
 
