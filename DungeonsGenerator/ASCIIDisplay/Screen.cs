@@ -1,11 +1,12 @@
-﻿using Dungeons.Tiles;
+﻿using Dungeons.ASCIIDisplay.Presenters;
+using Dungeons.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dungeons.ASCIIPresenters
+namespace Dungeons.ASCIIDisplay
 {
   public class Screen
   {
@@ -24,6 +25,7 @@ namespace Dungeons.ASCIIPresenters
     Dictionary<string, ListPresenter> lists;
     protected IDrawingEngine DrawingEngine;
     public DungeonNode Dungeon;
+    public bool UpdateUI { get; set; } = true;
 
     public Screen(IDrawingEngine drawingEngine, int originX = 0, int originY = 0)//, int dungeonY = 0)
     {
@@ -88,9 +90,12 @@ namespace Dungeons.ASCIIPresenters
         CreateUI();
       }
 
-      DrawingEngine.Clear();
-      RedrawLists();
-      ASCIIItems.ForEach(i => i.Redraw(DrawingEngine));
+      //DrawingEngine.Clear();
+      if (UpdateUI)
+      {
+        RedrawLists();
+        ASCIIItems.ForEach(i => i.Redraw(DrawingEngine));
+      }
 
       if (DungeonPresenter == null)
       {
@@ -98,10 +103,13 @@ namespace Dungeons.ASCIIPresenters
       }
 
       DungeonPresenter.Redraw(Dungeon, PrintInfo);
+      DrawingEngine.SetCursorPosition(0, 0);
     }
 
     public virtual void RedrawLists()
     {
+      if (!UpdateUI)
+        return;
       foreach (var list in Lists)
       {
         UpdateList(list.Value);

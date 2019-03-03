@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dungeons.ASCIIPresenters
+namespace Dungeons.ASCIIDisplay
 {
   public class ConsoleDrawingEngine : IDrawingEngine
   {

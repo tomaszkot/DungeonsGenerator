@@ -1,5 +1,5 @@
 ﻿using Dungeons;
-using Dungeons.ASCIIPresenters;
+using Dungeons.ASCIIDisplay;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

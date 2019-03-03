@@ -47,10 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ASCIIPresenters\ConsoleDrawingEngine.cs" />
-    <Compile Include="ASCIIPresenters\DungeonPresenter.cs" />
-    <Compile Include="ASCIIPresenters\ListPresenter.cs" />
-    <Compile Include="ASCIIPresenters\Screen.cs" />
+    <Compile Include="ASCIIDisplay\ConsoleDrawingEngine.cs" />
+    <Compile Include="ASCIIDisplay\Presenters\DungeonPresenter.cs" />
+    <Compile Include="ASCIIDisplay\Presenters\Item.cs" />
+    <Compile Include="ASCIIDisplay\Presenters\Label.cs" />
+    <Compile Include="ASCIIDisplay\Presenters\ListPresenter.cs" />
+    <Compile Include="ASCIIDisplay\Screen.cs" />
     <Compile Include="Core\GenerationConstraints.cs" />
     <Compile Include="Core\GenericEventArgs.cs" />
     <Compile Include="Core\RandHelper.cs" />
@@ -59,7 +61,7 @@
     <Compile Include="GenerationInfo.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="DungeonNode.cs" />
-    <Compile Include="ASCIIPresenters\IDrawingEngine.cs" />
+    <Compile Include="ASCIIDisplay\IDrawingEngine.cs" />
     <Compile Include="NodeInteriorGenerator.cs" />
     <Compile Include="Tiles\Door.cs" />
     <Compile Include="Tiles\IObstacle.cs" />

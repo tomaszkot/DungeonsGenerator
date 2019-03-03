@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dungeons.ASCIIPresenters
+namespace Dungeons.ASCIIDisplay
 {
   //basic interface for ASCII displaying
   public interface IDrawingEngine

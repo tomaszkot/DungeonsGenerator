@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace Dungeons.ASCIIPresenters
+namespace Dungeons.ASCIIDisplay.Presenters
 {
   public class DungeonPresenter
   {
