@@ -19,13 +19,6 @@ namespace Dungeons.Core
       return InvalidPoint;
     }
 
-    //ForEch was not compiling for Win8.1 phone :/
-    public static void Each<T>(this IEnumerable<T> source, Action<T> action)
-    {
-      foreach (T element in source)
-        action(element);
-    }
-
     public static string FirstCharToUpper(string input)
     {
       switch (input)
