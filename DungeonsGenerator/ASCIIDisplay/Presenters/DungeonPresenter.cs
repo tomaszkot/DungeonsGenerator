@@ -40,6 +40,8 @@ namespace Dungeons.ASCIIDisplay.Presenters
         {
           symbol = tile.Symbol;
         }
+        else
+          Debug.WriteLine("NR "+ tile);
       }
       drawingEngine.ForegroundColor = color;
       drawingEngine.Write(symbol);

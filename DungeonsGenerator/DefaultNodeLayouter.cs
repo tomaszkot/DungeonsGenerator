@@ -21,6 +21,11 @@ namespace Dungeons
       this.nextForcedSide = nextForcedSide;
     }
   }
+
+  class LayouterOptions
+  {
+    public bool RevealAllNodes { get; set; } = true;
+  }
   
   //Takes list of nodes and arranges them into a dungeon. Nodes are aligning one to another no special corridors.
   class DefaultNodeLayouter
@@ -29,9 +34,13 @@ namespace Dungeons
     bool generateLayoutDoors = true;
     EntranceSide? forcedNextSide = EntranceSide.Bottom;
     EntranceSide? forcedEntranceSideToSkip = null;// EntranceSide.Right;
+    LayouterOptions options;
 
-    public T DoLayout<T>(List<DungeonNode> nodes) where T : DungeonNode, new()
+    public T DoLayout<T>(List<DungeonNode> nodes, LayouterOptions opt = null) where T : DungeonNode, new()
     {
+      options = opt;
+      if (options == null)
+        options = new LayouterOptions();
       //totals sizes
       var tw = nodes.Sum(i => i.Width);
       var th = nodes.Sum(i => i.Height);
@@ -81,7 +90,7 @@ namespace Dungeons
         if (forcedEntranceSideToSkip != null)
           entranceSideToSkip = forcedEntranceSideToSkip.Value;
 
-        mazeNodes[nodeIndex].Reveal(nodeIndex == 0, true);
+        mazeNodes[nodeIndex].Reveal(nodeIndex == 0 || options.RevealAllNodes, true);
 
         localLevel.AppendMaze
         (

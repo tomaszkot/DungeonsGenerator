@@ -671,8 +671,8 @@ namespace Dungeons
 
     public virtual void Reveal(bool reveal, bool force = false)
     {
-      //if (reveal && revealed && !force)
-      //  return;
+      if (reveal && revealed && !force)//Optimize
+        return;
 
       Debug.WriteLine("reveal " + NodeIndex + " start");
       DoGridAction((int col, int row) =>
@@ -686,15 +686,15 @@ namespace Dungeons
           tiles[row, col].Revealed = revealTile;
           if (reveal)
           {
-            Debug.WriteLine("reveal " + tiles[row, col]);
+            //Debug.WriteLine("reveal " + tiles[row, col]);
             if (tiles[row, col].DungeonNodeIndex < 0)
             {
-              Debug.WriteLine("reveal < 0" + tiles[row, col]);
+              //Debug.WriteLine("reveal < 0" + tiles[row, col]);
             }
           }
         }
       });
-      //revealed = reveal;
+      revealed = reveal;
 
 
       Debug.WriteLine("reveal " + NodeIndex + " end");

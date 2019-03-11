@@ -83,6 +83,10 @@ namespace Dungeons.Tiles
         {
           int k = 0;
         }
+        if (!value)
+        {
+          int k = 0;
+        }
       }
     }
 
