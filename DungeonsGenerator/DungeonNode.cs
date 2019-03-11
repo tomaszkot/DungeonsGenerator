@@ -641,7 +641,6 @@ namespace Dungeons
       {
         for (int i = 0; i < toDel.Count; i++)
         {
-          //var dni = toDel[i].dungeonNodeIndex;
           var wall = CreateWall();
           if (this.SetTile(wall, toDel[i].Point))
           {
@@ -656,6 +655,8 @@ namespace Dungeons
     {
       return new Wall();
     }
+
+    public event EventHandler<GenericEventArgs<DungeonNode>> OnRevealed;
 
     public virtual void Reveal(bool reveal, bool force = false)
     {
@@ -683,7 +684,8 @@ namespace Dungeons
         }
       });
       revealed = reveal;
-
+      if (revealed && OnRevealed != null)
+        OnRevealed(this, new GenericEventArgs<DungeonNode>(this));
 
       Debug.WriteLine("reveal " + NodeIndex + " end ");
     }

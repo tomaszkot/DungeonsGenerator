@@ -23,7 +23,7 @@ namespace Dungeons
     public bool GenerateRandomStonesBlocks = true;
 
     public int MinNodeSize = 12;
-    public int MaxNodeSize = 16;
+    public int MaxNodeSize = 19;
 
     public readonly int MinSubMazeNodeSize = 5;
     public readonly int MinSimpleInteriorSize = 3;

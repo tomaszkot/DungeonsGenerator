@@ -90,7 +90,7 @@ namespace Dungeons
         if (forcedEntranceSideToSkip != null)
           entranceSideToSkip = forcedEntranceSideToSkip.Value;
 
-        mazeNodes[nodeIndex].Reveal(nodeIndex == 0 || options.RevealAllNodes, true);
+        mazeNodes[nodeIndex].Reveal(options.RevealAllNodes, true);
 
         localLevel.AppendMaze
         (
