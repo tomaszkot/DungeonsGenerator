@@ -41,7 +41,7 @@ namespace Dungeons.ASCIIDisplay.Presenters
           symbol = tile.Symbol;
         }
         else
-          Debug.WriteLine("NR "+ tile);
+          Debug.WriteLine("tile.Revealed " + tile);
       }
       drawingEngine.ForegroundColor = color;
       drawingEngine.Write(symbol);

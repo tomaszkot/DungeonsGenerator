@@ -10,18 +10,6 @@ using System.Xml.Serialization;
 
 namespace Dungeons
 {
-  //public interface INodePrinter
-  //{
-  //  void Print(Tile tile, PrintInfo pi);
-  //  void PrintNewLine();
-  //}
-
-  //public interface ITilesFactory
-  //{
-  //  T CreateTile<T>() where T : Tile;
-  //  //Tile CreateDoor();
-  //}
-
   public class PrintInfo
   {
     public bool PrintNodeIndexes = false;
@@ -213,7 +201,7 @@ namespace Dungeons
         GenerateRandomStonesBlocks();
       }
 
-      Reveal(true);
+      Reveal(generationInfo.RevealTiles);
     }
 
     protected void GenerateRandomStonesBlocks()
@@ -697,7 +685,7 @@ namespace Dungeons
       revealed = reveal;
 
 
-      Debug.WriteLine("reveal " + NodeIndex + " end");
+      Debug.WriteLine("reveal " + NodeIndex + " end ");
     }
 
     protected virtual bool ShallReveal(int row, int col)

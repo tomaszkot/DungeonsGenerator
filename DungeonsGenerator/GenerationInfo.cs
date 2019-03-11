@@ -32,6 +32,7 @@ namespace Dungeons
     public bool ChildIslandAllowed = true;
     internal bool GenerateEmptyTiles = true;
     public bool GenerateDoors = true;
+    public bool RevealTiles { get; set; } = true;
 
     public GenerationInfo()
     {

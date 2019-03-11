@@ -22,7 +22,7 @@ namespace Dungeons
     }
   }
 
-  class LayouterOptions
+  public class LayouterOptions
   {
     public bool RevealAllNodes { get; set; } = true;
   }

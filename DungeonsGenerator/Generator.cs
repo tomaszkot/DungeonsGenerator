@@ -111,11 +111,11 @@ namespace Dungeons
     /// </summary>
     /// <param name="mazeNodes"></param>
     /// <returns></returns>
-    protected virtual T Generate<T>(int levelIndex) where T : DungeonNode, new()
+    protected virtual T Generate<T>(int levelIndex, LayouterOptions opt = null) where T : DungeonNode, new()
     {
       var mazeNodes = CreateDungeonNodes();
       var layouter = new DefaultNodeLayouter();
-      T level = layouter.DoLayout<T>(mazeNodes);
+      T level = layouter.DoLayout<T>(mazeNodes, opt);
       return level;
     }
 
