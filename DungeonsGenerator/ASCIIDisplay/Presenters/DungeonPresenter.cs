@@ -39,7 +39,6 @@ namespace Dungeons.ASCIIDisplay.Presenters
         if (tile.Revealed)
         {
           symbol = tile.Symbol;
-
         }
       }
       drawingEngine.ForegroundColor = color;

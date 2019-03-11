@@ -98,25 +98,47 @@ namespace Dungeons
       var bottomPoints = GenerateWallPoints(0, Width, Height - 1, Height, 0);
       var leftPoints = GenerateWallPoints(0, 1, 0, Height, 0);
       var rightPoints = GenerateWallPoints(Width - 1, Width, 0, Height, 0);
-      dn.Sides.Add(EntranceSide.Top, AddWalls(topPoints));
-      dn.Sides.Add(EntranceSide.Bottom, AddWalls(bottomPoints));
-      dn.Sides.Add(EntranceSide.Left, AddWalls(leftPoints));
-      dn.Sides.Add(EntranceSide.Right, AddWalls(rightPoints));
 
+      AddWalls(topPoints);
+      AddWalls(bottomPoints);
+      AddWalls(leftPoints);
+      AddWalls(rightPoints);
+
+      for (int row = 0; row < Height; row++)
+      {
+        for (int col = 0; col < Width; col++)
+        {
+          if(row == 0)
+            dn.Sides[EntranceSide.Top].Add(this.dn.Tiles[row, col] as Wall);
+
+          else if (row == Height-1)
+            dn.Sides[EntranceSide.Bottom].Add(this.dn.Tiles[row, col] as Wall);
+
+          else if (col == 0)
+            dn.Sides[EntranceSide.Left].Add(this.dn.Tiles[row, col] as Wall);
+
+          else if (col == Width-1)
+            dn.Sides[EntranceSide.Right].Add(this.dn.Tiles[row, col] as Wall);
+        }
+      }
+    
       foreach (var side in dn.Sides.Values)
       {
         foreach (var si in side)
           (si as Wall).IsSide = true;
       }
 
-      List<EntranceSide> generated = new List<EntranceSide>();
-      for (int i = 0; i < generationInfo.EntrancesCount; i++)
+      if (this.generationInfo.GenerateDoors)
       {
-        var entr = GenerateEntranceAtRandomSide(generated.ToArray());
-        if (entr.Item2 != null)
+        List<EntranceSide> generated = new List<EntranceSide>();
+        for (int i = 0; i < generationInfo.EntrancesCount; i++)
         {
-          generated.Add(entr.Item1);
-          dn.CreateDoor(entr.Item2);
+          var entr = GenerateEntranceAtRandomSide(generated.ToArray());
+          if (entr.Item2 != null)
+          {
+            generated.Add(entr.Item1);
+            dn.CreateDoor(entr.Item2);
+          }
         }
       }
     }

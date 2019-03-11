@@ -73,8 +73,9 @@ namespace Dungeons
     [JsonIgnore]
     internal Dictionary<EntranceSide, List<Wall>> Sides { get { return sides; } }
     protected List<TileNeighborhood> allNeighborhoods = new List<TileNeighborhood> { TileNeighborhood.East, TileNeighborhood.West, TileNeighborhood.North, TileNeighborhood.South };
-    public const int DefaultNodeIndex = 100;
+    public const int DefaultNodeIndex = 99;
     public const int ChildIslandNodeIndex = -1;
+    public static int NextChildIslandId = ChildIslandNodeIndex;
     int nodeIndex;
     DungeonNode parent;
     
@@ -105,7 +106,6 @@ namespace Dungeons
 
       if (generateContent)
       {
-       
         GenerateContent();
       }
     }
@@ -179,12 +179,12 @@ namespace Dungeons
 
     //methods
 
-    internal void GenerateLayoutDoors(EntranceSide side)
+    internal void GenerateLayoutDoors(EntranceSide side, DungeonNode nextNode)
     {
       List<Wall> wall = sides[side];
       for (int i = 0; i < wall.Count; i++)
       {
-        if (i % 2 == 0)
+        if (i>0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
           CreateDoor(wall[i]);
       }
     }
@@ -193,15 +193,24 @@ namespace Dungeons
     {
       if (generationInfo == null)
         return;
-      if(generationInfo.GenerateEmptyTiles)
+
+      Sides.Add(EntranceSide.Top, new List<Wall>());
+      Sides.Add(EntranceSide.Bottom, new List<Wall>());
+      Sides.Add(EntranceSide.Left, new List<Wall>());
+      Sides.Add(EntranceSide.Right, new List<Wall>());
+
+
+      if (generationInfo.GenerateEmptyTiles)
         PlaceEmptyTiles();
       if (generationInfo.GenerateOuterWalls)
         GenerateOuterWalls();
 
       if (generationInfo.GenerateRandomInterior)
+      {
         interiorGenerator.GenerateRandomInterior();
 
-      GenerateRandomStonesBlocks();
+        GenerateRandomStonesBlocks();
+      }
     }
 
     protected void GenerateRandomStonesBlocks()
@@ -445,7 +454,8 @@ namespace Dungeons
       childMaze.AppendMazeStartPoint = start;
       if (childIsland)
       {
-        childMaze.NodeIndex = ChildIslands.Count * -1;
+        childMaze.NodeIndex = NextChildIslandId--;
+        childMaze.SetTilesNodeIndex();
       }
       for (int row = 0; row < childMazeMaxSize.Value.Y; row++)
       {
@@ -462,7 +472,7 @@ namespace Dungeons
               var indexOfWall = childMaze.Sides[entranceSideToSkip.Value].IndexOf(childMazeWall);
               if(prevNode == null || 
                 (entranceSideToSkip == EntranceSide.Left && indexOfWall < prevNode.Height-1) ||
-                (entranceSideToSkip == EntranceSide.Top && indexOfWall < prevNode.Width - 1)
+                (entranceSideToSkip == EntranceSide.Top && indexOfWall < prevNode.Width)
                 )
                 continue;
             }
@@ -634,14 +644,19 @@ namespace Dungeons
           if (neibs.Where(i => i is Wall).Count() >= 3 ||
              neibs.Where(i=> i == null).Any())
             toDel.Add(tile);
-
         }
       }
       if (toDel.Any())
       {
         for (int i = 0; i < toDel.Count; i++)
         {
-          this.SetTile(CreateWall(), toDel[i].Point);
+          //var dni = toDel[i].dungeonNodeIndex;
+          var wall = CreateWall();
+          if (this.SetTile(wall, toDel[i].Point))
+          {
+            wall.dungeonNodeIndex = toDel[i].DungeonNodeIndex;
+            wall.Revealed = toDel[i].Revealed;
+          }
         }
       }
     }
@@ -651,20 +666,39 @@ namespace Dungeons
     return new Wall();
   }
 
-  //public virtual Door CreateDoor()
-  //{
-  //  return new Door();
-  //}
+    //public virtual Door CreateDoor()
+    //{
+    //  return new Door();
+    //}
 
-  public void Reveal(bool reveal)
+    public virtual void Reveal(bool reveal)
     {
+      Debug.WriteLine("reveal " + NodeIndex + " start");
       DoGridAction((int col, int row) =>
       {
         if (tiles[row, col] != null)
         {
-          tiles[row, col].Revealed = reveal;
+          var revealTile = reveal;
+          if (revealTile)
+            revealTile = ShallReveal(row, col);
+
+           tiles[row, col].Revealed = revealTile;
+          if (reveal)
+          {
+            Debug.WriteLine("reveal " + tiles[row, col]);
+            if (tiles[row, col].DungeonNodeIndex < 0)
+            {
+              Debug.WriteLine("reveal < 0" + tiles[row, col]);
+            }
+          }
         }
       });
+      Debug.WriteLine("reveal " + NodeIndex + " end");
+    }
+
+    protected virtual bool ShallReveal(int row, int col)
+    {
+      return true;
     }
 
     public Point GetEmptyNeighborhoodPoint(Tile target, TileNeighborhood? prefferedSide = null)

@@ -75,14 +75,19 @@ namespace Dungeons
       var gi = this.CreateLevelGenerationInfo();
       //gi.GenerateOuterWalls = true;
       //for (int i = 0; i < NumberOfNodes; i++)
-      for (int i = 0; i < 3; i++)
+      for (int i = 0; i < GenerationInfo.NumberOfNodes; i++)
       {
         var node = CreateNode(i, gi);
-        node.Reveal(true);
+        //SetInitialReveal(i, node);
         nodes.Add(node);
       }
       return nodes;
     }
+
+    //protected virtual void SetInitialReveal(int nodeIndex, DungeonNode node)
+    //{
+    //  node.Reveal(true);
+    //}
 
     protected virtual GenerationInfo CreateNodeGenerationInfo()
     {
