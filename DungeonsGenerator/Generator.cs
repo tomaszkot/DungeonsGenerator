@@ -78,7 +78,6 @@ namespace Dungeons
       for (int i = 0; i < GenerationInfo.NumberOfNodes; i++)
       {
         var node = CreateNode(i, gi);
-        //SetInitialReveal(i, node);
         nodes.Add(node);
       }
       return nodes;

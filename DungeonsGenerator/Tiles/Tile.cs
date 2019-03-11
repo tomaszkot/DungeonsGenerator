@@ -40,7 +40,7 @@ namespace Dungeons.Tiles
     /// <summary>
     /// If false the tile is not visible. The revealed flag shall be typically set to true when a door leading to room are opened.
     /// </summary>
-    bool revealed;
+    bool revealed = true;
 
 
     public Tile() : this(Constants.SymbolBackground)
@@ -57,7 +57,6 @@ namespace Dungeons.Tiles
       this.Name = GetType().Name;
       this.Point = point;
       this.Symbol = symbol;
-      this.revealed = true;
     }
 
     public int dungeonNodeIndex;

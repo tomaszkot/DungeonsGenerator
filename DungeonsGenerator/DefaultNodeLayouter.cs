@@ -81,7 +81,7 @@ namespace Dungeons
         if (forcedEntranceSideToSkip != null)
           entranceSideToSkip = forcedEntranceSideToSkip.Value;
 
-        mazeNodes[nodeIndex].Reveal(nodeIndex == 0);
+        mazeNodes[nodeIndex].Reveal(nodeIndex == 0, true);
 
         localLevel.AppendMaze
         (

@@ -36,14 +36,14 @@ namespace Dungeons
 
   [XmlRoot("Node", Namespace = "DungeonNode")]
   [XmlInclude(typeof(Wall))]
-  public class DungeonNode 
+  public class DungeonNode
   {
     [XmlIgnore]
     //[JsonIgnore]
     protected Tile[,] tiles;
     protected GenerationInfo generationInfo;
     protected static Random random;
-    
+
     [XmlIgnore]
     [JsonIgnore]
     List<DungeonNode> childIslands = new List<DungeonNode>();
@@ -78,29 +78,30 @@ namespace Dungeons
     public static int NextChildIslandId = ChildIslandNodeIndex;
     int nodeIndex;
     DungeonNode parent;
-    
+
     public event EventHandler<GenericEventArgs<Tile>> OnTileRevealed;
     NodeInteriorGenerator interiorGenerator;
+    bool revealed;
 
     //ctors
     static DungeonNode()
     {
       random = new Random();
-      
+
     }
 
     public DungeonNode() : this(10, 10, null, -100)
     {
     }
 
-    public DungeonNode(int width = 10, int height = 10): this(width, height, null)
+    public DungeonNode(int width = 10, int height = 10) : this(width, height, null)
     {
-      
+
     }
 
-    public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null, 
+    public DungeonNode(int width = 10, int height = 10, GenerationInfo gi = null,
                        int nodeIndex = DefaultNodeIndex, DungeonNode parent = null, bool generateContent = true)
-      :this(null, gi, nodeIndex, parent)
+      : this(null, gi, nodeIndex, parent)
     {
       tiles = new Tile[height, width];
 
@@ -184,7 +185,7 @@ namespace Dungeons
       List<Wall> wall = sides[side];
       for (int i = 0; i < wall.Count; i++)
       {
-        if (i>0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
+        if (i > 0 && i % 2 == 0)// && (side != EntranceSide.Bottom || i < nextNode.Width))
           CreateDoor(wall[i]);
       }
     }
@@ -211,13 +212,15 @@ namespace Dungeons
 
         GenerateRandomStonesBlocks();
       }
+
+      Reveal(true);
     }
 
     protected void GenerateRandomStonesBlocks()
     {
       interiorGenerator.GenerateRandomStonesBlocks();
     }
-    
+
     public bool IsCornerWall(Wall wall)
     {
       var neibs = GetNeighborTiles(wall).Where(i => i is Wall).ToList();
@@ -375,7 +378,7 @@ namespace Dungeons
           if (tile.IsAtValidPoint && (tile.Point != point) && Width > tile.Point.X && Height > tile.Point.Y)
           {
             var emp = GenerateEmptyTile();
-            if(emp != null)
+            if (emp != null)
               emp.DungeonNodeIndex = tile.DungeonNodeIndex;//preserve;
             SetTile(emp, tile.Point);
             if (emp != null)
@@ -396,12 +399,12 @@ namespace Dungeons
 
       return false;
     }
-    
+
     protected virtual void SetDungeonNodeIndex(Tile tile)
     {
       tile.DungeonNodeIndex = this.NodeIndex;
     }
-    
+
     Point GetInteriorStartingPoint(int minSizeReduce = 6, DungeonNode child = null)
     {
       return interiorGenerator.GetInteriorStartingPoint(minSizeReduce, child);
@@ -427,7 +430,7 @@ namespace Dungeons
     {
       return new Door();
     }
-    
+
     public virtual DungeonNode CreateChildIslandInstance(int w, int h, GenerationInfo gi, DungeonNode parent)
     {
       return new DungeonNode(w, h, gi, parent: this);
@@ -470,8 +473,8 @@ namespace Dungeons
             if (childMaze.Sides[entranceSideToSkip.Value].Contains(childMazeWall))
             {
               var indexOfWall = childMaze.Sides[entranceSideToSkip.Value].IndexOf(childMazeWall);
-              if(prevNode == null || 
-                (entranceSideToSkip == EntranceSide.Left && indexOfWall < prevNode.Height-1) ||
+              if (prevNode == null ||
+                (entranceSideToSkip == EntranceSide.Left && indexOfWall < prevNode.Height - 1) ||
                 (entranceSideToSkip == EntranceSide.Top && indexOfWall < prevNode.Width)
                 )
                 continue;
@@ -490,7 +493,7 @@ namespace Dungeons
       }
     }
 
- 
+
     private static void SetCorner(Point? maxSize, int row, int col, Tile tile)
     {
       if ((col == 1 && row == 1)
@@ -582,7 +585,7 @@ namespace Dungeons
         }
       }
     }
-    
+
     internal Tile GenerateEntrance(List<Wall> points)
     {
       return interiorGenerator.GenerateEntrance(points);
@@ -628,7 +631,7 @@ namespace Dungeons
 
     public EntranceSide? AppendedSide { get; private set; }
 
-    
+
 
     /// <summary>
     /// Delete unreachable doors 
@@ -642,7 +645,7 @@ namespace Dungeons
         {
           var neibs = GetNeighborTiles(tile);
           if (neibs.Where(i => i is Wall).Count() >= 3 ||
-             neibs.Where(i=> i == null).Any())
+             neibs.Where(i => i == null).Any())
             toDel.Add(tile);
         }
       }
@@ -661,18 +664,16 @@ namespace Dungeons
       }
     }
 
-  public virtual Wall CreateWall()
-  {
-    return new Wall();
-  }
-
-    //public virtual Door CreateDoor()
-    //{
-    //  return new Door();
-    //}
-
-    public virtual void Reveal(bool reveal)
+    public virtual Wall CreateWall()
     {
+      return new Wall();
+    }
+
+    public virtual void Reveal(bool reveal, bool force = false)
+    {
+      //if (reveal && revealed && !force)
+      //  return;
+
       Debug.WriteLine("reveal " + NodeIndex + " start");
       DoGridAction((int col, int row) =>
       {
@@ -682,7 +683,7 @@ namespace Dungeons
           if (revealTile)
             revealTile = ShallReveal(row, col);
 
-           tiles[row, col].Revealed = revealTile;
+          tiles[row, col].Revealed = revealTile;
           if (reveal)
           {
             Debug.WriteLine("reveal " + tiles[row, col]);
@@ -693,6 +694,9 @@ namespace Dungeons
           }
         }
       });
+      //revealed = reveal;
+
+
       Debug.WriteLine("reveal " + NodeIndex + " end");
     }
 
