@@ -656,7 +656,7 @@ namespace Dungeons
       return new Wall();
     }
 
-    public event EventHandler<GenericEventArgs<DungeonNode>> OnRevealed;
+    public event EventHandler<GenericEventArgs<IList<Tile>>> OnRevealed;
 
     public virtual void Reveal(bool reveal, bool force = false)
     {
@@ -664,6 +664,8 @@ namespace Dungeons
         return;
 
       Debug.WriteLine("reveal " + NodeIndex + " start");
+      IList<Tile> revealedTiles = new List<Tile>();
+
       DoGridAction((int col, int row) =>
       {
         if (tiles[row, col] != null)
@@ -673,8 +675,9 @@ namespace Dungeons
             revealTile = ShallReveal(row, col);
 
           tiles[row, col].Revealed = revealTile;
-          if (reveal)
+          if (revealTile)
           {
+            revealedTiles.Add(tiles[row, col]);
             //Debug.WriteLine("reveal " + tiles[row, col]);
             if (tiles[row, col].DungeonNodeIndex < 0)
             {
@@ -685,7 +688,10 @@ namespace Dungeons
       });
       revealed = reveal;
       if (revealed && OnRevealed != null)
-        OnRevealed(this, new GenericEventArgs<DungeonNode>(this));
+      {
+        var ev = new GenericEventArgs<IList<Tile>>(revealedTiles);
+        OnRevealed(this, ev);
+      }
 
       Debug.WriteLine("reveal " + NodeIndex + " end ");
     }
