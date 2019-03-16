@@ -146,18 +146,15 @@ namespace Dungeons
       }
     }
 
-    [XmlIgnore]
-    [JsonIgnore]
     public virtual List<DungeonNode> Parts
     {
       get
       {
         return parts;
       }
+      set { parts = value; }
     }
 
-    [XmlIgnore]
-    [JsonIgnore]
     public List<DungeonNode> ChildIslands
     {
       get
@@ -592,9 +589,9 @@ namespace Dungeons
       return instance;
     }
 
-    public void SetEmptyTile(Point pt)
+    public bool SetEmptyTile(Point pt)
     {
-      SetTile(GenerateEmptyTile(pt), pt);
+      return SetTile(GenerateEmptyTile(pt), pt);
     }
 
     public Tile GenerateEmptyTile()

@@ -2,6 +2,7 @@
 using Dungeons.Tiles;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,8 +25,12 @@ namespace Dungeons.ASCIIDisplay
 
     Dictionary<string, ListPresenter> lists;
     protected IDrawingEngine DrawingEngine;
-    public DungeonNode Dungeon;
+    DungeonNode dungeon;
+    public virtual DungeonNode Dungeon { get { return dungeon; } }
     public bool UpdateUI { get; set; } = true;
+    public Label DungeonDesc { get => dungeonDesc; set => dungeonDesc = value; }
+
+    Label dungeonDesc;
 
     public Screen(IDrawingEngine drawingEngine)
     {
@@ -61,8 +66,6 @@ namespace Dungeons.ASCIIDisplay
       list.Add(new ListItem("Esc - exit"));
       usage.Items = list;
       Lists[UsageListName] = usage;
-
-      
     }
 
     public virtual void CreateUI()
@@ -70,17 +73,17 @@ namespace Dungeons.ASCIIDisplay
       CreateLists();
       DungeonY = Lists[UsageListName].TotalHeight;// 1 - Dungeon.Description, 2 - spacing
 
-      var lbl = new Label(OriginX, OriginY + Lists[UsageListName].TotalHeight, Dungeon.Description);
-      ASCIIItems.Add(lbl);
+      DungeonDesc = new Label(OriginX, OriginY + Lists[UsageListName].TotalHeight, Dungeon.Description);
+      ASCIIItems.Add(DungeonDesc);
 
-      DungeonY += lbl.TotalHeight;
+      DungeonY += DungeonDesc.TotalHeight;
       DungeonY += 2;
 
     }
 
     public virtual void Redraw(DungeonNode dungeon)
     {
-      Dungeon = dungeon;
+      this.dungeon = dungeon;
 
       if (!ASCIIItems.Any())
       {
@@ -91,16 +94,35 @@ namespace Dungeons.ASCIIDisplay
       if (UpdateUI)
       {
         RedrawLists();
-        ASCIIItems.ForEach(i => i.Redraw(DrawingEngine));
+
+        RedrawItems();
       }
 
       if (DungeonPresenter == null)
       {
         DungeonPresenter = new DungeonPresenter(DrawingEngine, OriginX + DungeonX, OriginY + DungeonY);
       }
-
-      DungeonPresenter.Redraw(Dungeon, PrintInfo);
+      //Debug.Assert(dungeon == Dungeon);
+      DungeonPresenter.Redraw(dungeon, PrintInfo);
       DrawingEngine.SetCursorPosition(0, 0);
+    }
+
+    private void RedrawItems()
+    {
+      
+      ASCIIItems.ForEach(i =>
+      {
+        UpdateItem(i);
+        i.Redraw(DrawingEngine);
+        
+
+      }
+      );
+    }
+
+    protected virtual void UpdateItem(Item i)
+    {
+      
     }
 
     public virtual void RedrawLists()
