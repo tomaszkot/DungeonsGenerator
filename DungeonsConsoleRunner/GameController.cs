@@ -28,7 +28,8 @@ namespace DungeonsConsoleRunner
 
     protected virtual Screen CreateScreen()
     {
-      return container.GetInstance<Screen>();
+      screen = container.GetInstance<Screen>();
+      return screen;
     }
 
     public void Run()

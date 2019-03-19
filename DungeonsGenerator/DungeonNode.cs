@@ -750,5 +750,10 @@ namespace Dungeons
       return res;
     }
 
+    public List<Tile> GetTiles() 
+    {
+      return GetTiles<Tile>();
+    }
+
   }
 }
